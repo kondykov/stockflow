@@ -1,0 +1,73 @@
+services:
+  web:
+    image: nginx:latest
+    volumes:
+      - ./src:/var/www/
+      - ./env/nginx/:/etc/nginx/conf.d
+    ports:
+      - "8080:80"
+    depends_on:
+      - app
+    networks:
+      - stockflow-network
+    container_name: stockflow.nginx
+
+  app:
+    container_name: stockflow.api
+    build:
+      context: .
+      dockerfile: ./env/php/Dockerfile
+      target: development
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    volumes:
+      - ./src:/var/www
+    depends_on:
+      - db
+      - rabbitmq
+    networks:
+      - stockflow-network
+
+  consumer:
+    build:
+      context: .
+      dockerfile: ./env/php/Dockerfile
+      target: development
+    command: php bin/console messenger:consume async -vv
+    volumes:
+      - ./src:/var/www
+    depends_on:
+      - rabbitmq
+    networks:
+      - stockflow-network
+    container_name: stockflow.consumer
+
+  db:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - ./tmp/db:/var/lib/postgresql/data
+    ports:
+      - "8085:5432"
+    networks:
+      - stockflow-network
+    container_name: stockflow.db
+
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    environment:
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_USER}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASSWORD}
+    ports:
+      - "15672:15672"
+      - "5672:5672"
+    networks:
+      - stockflow-network
+    container_name: stockflow.rabbitmq
+
+networks:
+  stockflow-network:
+    driver: bridge
