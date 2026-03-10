@@ -23,5 +23,24 @@ services:
             - '../src/**/Domain/ValueObject/'
             - '../src/Kernel.php'
 
+    StockFlow\Shared\Infrastructure\Extractor\ExtractorInterface:
+        alias: StockFlow\Identity\Infrastructure\Extractor\UserExtractor
+
+    StockFlow\Shared\Infrastructure\Bus\CommandBus:
+        arguments:
+            $commandBus: '@command.bus'
+
+    StockFlow\Shared\Infrastructure\Bus\QueryBus:
+        arguments:
+            $queryBus: '@query.bus'
+
+    _instanceof:
+        StockFlow\Shared\Application\Command\CommandHandlerInterface:
+            tags:
+                - { name: messenger.message_handler, bus: command.bus }
+        StockFlow\Shared\Application\Query\QueryHandlerInterface:
+            tags:
+                - { name: messenger.message_handler, bus: query.bus }
+
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones

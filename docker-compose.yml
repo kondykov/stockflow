@@ -22,6 +22,9 @@ services:
       - "host.docker.internal:host-gateway"
     volumes:
       - ./src:/var/www
+      - ./.env:/var/www/.env
+    env_file:
+      - .env
     depends_on:
       - db
       - rabbitmq
@@ -36,6 +39,9 @@ services:
     command: php bin/console messenger:consume async -vv
     volumes:
       - ./src:/var/www
+      - ./.env:/var/www/.env
+    env_file:
+      - .env
     depends_on:
       - rabbitmq
     networks:

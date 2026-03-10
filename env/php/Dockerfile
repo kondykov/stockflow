@@ -30,7 +30,10 @@ FROM base AS production
 USER ${LOCAL_USER}
 
 FROM base AS development
-RUN install-php-extensions xdebug
+RUN apt-get update && apt-get install -y vim && \
+    install-php-extensions xdebug amqp && \
+    apt-get clean && rm -rf /var/lib/apt/lists/*
+
 COPY ./env/php/xdebug.ini /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
 
 USER ${LOCAL_USER}
