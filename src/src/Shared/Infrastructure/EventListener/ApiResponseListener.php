@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace StockFlow\Shared\Infrastructure\EventListener;
 
 use Assert\InvalidArgumentException as AssertException;
+use Assert\LazyAssertionException;
 use StockFlow\Shared\Infrastructure\Response\ApiResponse;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
@@ -21,7 +22,8 @@ final readonly class ApiResponseListener
 {
     public function __construct(
         #[Autowire('%kernel.environment%')]
-        private string $env
+        private string $env,
+        private bool $useWhoops
     ) {
     }
 
@@ -64,9 +66,10 @@ final readonly class ApiResponseListener
         }
 
         $isValidation = $exception instanceof ValidationFailedException;
+        $isLazyAssertion = $exception instanceof LazyAssertionException;
         $isAssert = $exception instanceof AssertException;
 
-        if (!$isValidation && !$isAssert && $this->env === 'dev') {
+        if (!$isValidation && !$isAssert && $this->env === 'dev' && $this->useWhoops) {
             return;
         }
 
@@ -80,6 +83,14 @@ final readonly class ApiResponseListener
             foreach ($exception->getViolations() as $violation) {
                 $data[$violation->getPropertyPath()] = $violation->getMessage();
             }
+        } elseif ($isLazyAssertion) {
+            $code = 422;
+            $message = 'Ошибка валидации данных';
+            $data = [];
+            foreach ($exception->getErrorExceptions() as $error) {
+                $propertyPath = $error->getPropertyPath() ?: 'validation';
+                $data[$propertyPath] = $error->getMessage();
+            }
         } elseif ($isAssert) {
             $code = 422;
             $message = $exception->getMessage();
@@ -87,6 +98,15 @@ final readonly class ApiResponseListener
         } elseif ($exception instanceof HttpExceptionInterface) {
             $code = $exception->getStatusCode();
             $message = $exception->getMessage();
+
+            $previous = $exception->getPrevious();
+            if ($previous instanceof ValidationFailedException) {
+                $code = 422;
+                $message = 'Ошибка валидации данных';
+                foreach ($previous->getViolations() as $violation) {
+                    $data[$violation->getPropertyPath()] = $violation->getMessage();
+                }
+            }
         }
 
         $event->setResponse(new JsonResponse(ApiResponse::error($message, $data), $code));

@@ -1,11 +1,12 @@
 <?php
 
-namespace StockFlow\Shared\Infrastructure\Repository;
+namespace StockFlow\Shared\Infrastructure\Persistence\Doctrine\Repository;
 
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
 use StockFlow\Shared\Domain\Repository\RepositoryInterface;
+
 abstract class AbstractRepository extends ServiceEntityRepository implements RepositoryInterface
 {
     protected EntityManagerInterface $em;

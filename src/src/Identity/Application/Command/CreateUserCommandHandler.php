@@ -3,6 +3,8 @@
 namespace StockFlow\Identity\Application\Command;
 
 use Assert\Assert;
+use StockFlow\Identity\Domain\Dto\UserResponse;
+use StockFlow\Identity\Domain\Entity\Manager;
 use StockFlow\Identity\Domain\Entity\User;
 use StockFlow\Identity\Domain\Repository\UserRepositoryInterface;
 use StockFlow\Identity\Infrastructure\Extractor\UserExtractor;
@@ -20,13 +22,13 @@ readonly class CreateUserCommandHandler implements CommandHandlerInterface
     ) {
     }
 
-    public function __invoke(CreateUserCommand $command): array
+    public function __invoke(CreateUserCommand $command): UserResponse
     {
         $userExists = $this->repository->findByEmail($command->email);
 
         Assert::that($userExists, 'Пользователь с таким email уже существует', 'email')->null();
 
-        $user = new User();
+        $user = new Manager();
         $user->email = $command->email;
         $user->password = $this->hasher->hashPassword($user, $command->password);
 

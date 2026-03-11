@@ -2,28 +2,28 @@
 
 namespace StockFlow\Identity\Infrastructure\Extractor;
 
+use StockFlow\Identity\Domain\Dto\UserResponse;
 use StockFlow\Identity\Domain\Entity\User;
 use StockFlow\Shared\Infrastructure\Extractor\ExtractorInterface;
 
 /**
- * @implements ExtractorInterface<User>
+ * @implements ExtractorInterface<User, UserResponse>
  */
 final readonly class UserExtractor implements ExtractorInterface
 {
     /**
-     * @param User|object $entity
-     * @return array
+     * @inheritDoc
      */
-    public function extract(object $entity): array
+    public function extract(object $entity): UserResponse
     {
-        return [
-            'id' => $entity->id,
+        return new UserResponse(
+            id: $entity->id,
 
-            'email' => $entity->email,
-            'roles' => $entity->getRoles(),
+            email: $entity->email,
+            roles: $entity->getRoles(),
 
-            'createdAt' => $entity->createdAt->format('Y-m-d H:i:s'),
-            'updatedAt' => $entity->updatedAt->format('Y-m-d H:i:s'),
-        ];
+            createdAt: $entity->createdAt->format(\DateTimeInterface::ATOM),
+            updatedAt: $entity->updatedAt->format(\DateTimeInterface::ATOM)
+        );
     }
 }

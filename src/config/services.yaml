@@ -26,6 +26,11 @@ services:
     StockFlow\Shared\Infrastructure\Extractor\ExtractorInterface:
         alias: StockFlow\Identity\Infrastructure\Extractor\UserExtractor
 
+    StockFlow\Shared\Infrastructure\EventListener\ApiResponseListener:
+        arguments:
+            $env: '%kernel.environment%'
+            $useWhoops: '%env(bool:APP_USE_WHOOPS_HTML)%'
+
     StockFlow\Shared\Infrastructure\Bus\CommandBus:
         arguments:
             $commandBus: '@command.bus'

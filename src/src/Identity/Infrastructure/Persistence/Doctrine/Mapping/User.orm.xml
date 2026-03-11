@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping"
+                  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                  xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping
+    https://www.doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+
+    <entity name="StockFlow\Identity\Domain\Entity\User"
+            table="users"
+            inheritance-type="SINGLE_TABLE"
+            repository-class="StockFlow\Identity\Infrastructure\Persistence\Doctrine\Repository\UserRepository">
+
+        <discriminator-column name="type" type="string" length="50" />
+        <discriminator-map>
+            <discriminator-mapping value="admin" class="StockFlow\Identity\Domain\Entity\Admin" />
+            <discriminator-mapping value="manager" class="StockFlow\Identity\Domain\Entity\Manager" />
+        </discriminator-map>
+
+        <id name="id" type="integer" column="id">
+            <generator strategy="IDENTITY" />
+        </id>
+
+        <field name="email" length="180" unique="true" />
+        <field name="password"/>
+        <field name="createdAt" type="datetime_immutable" column="created_at" />
+        <field name="updatedAt" type="datetime_immutable" column="updated_at" />
+
+        <many-to-many field="userRoles"
+                      target-entity="StockFlow\Identity\Domain\Entity\RBAC\Role"
+                      fetch="EAGER">
+
+            <join-table name="rbac_user_roles">
+                <join-columns>
+                    <join-column name="user_id" on-delete="CASCADE" />
+                </join-columns>
+                <inverse-join-columns>
+                    <join-column name="role_id" on-delete="CASCADE" />
+                </inverse-join-columns>
+            </join-table>
+        </many-to-many>
+
+        <lifecycle-callbacks>
+            <lifecycle-callback type="prePersist" method="setInitialTimestamps" />
+            <lifecycle-callback type="preUpdate" method="setUpdateTimestamp" />
+        </lifecycle-callbacks>
+
+    </entity>
+
+</doctrine-mapping>

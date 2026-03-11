@@ -2,39 +2,29 @@
 
 namespace StockFlow\Identity\Domain\Entity;
 
-use Doctrine\ORM\Mapping as ORM;
-use StockFlow\Identity\Infrastructure\Repository\UserRepository;
-use StockFlow\Shared\Domain\Trait\Identifiable;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
+use StockFlow\Identity\Domain\Entity\RBAC\Role;
 use StockFlow\Shared\Domain\Trait\TimeStamps;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
-#[ORM\Entity(repositoryClass: UserRepository::class)]
-#[ORM\Table(name: 'users')]
-#[ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_EMAIL', fields: ['email'])]
-#[ORM\HasLifecycleCallbacks]
-class User implements UserInterface, PasswordAuthenticatedUserInterface
+abstract class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
-    use Identifiable, TimeStamps;
+    use TimeStamps;
 
-    #[ORM\Column(length: 180)]
-    public ?string $email {
-        set => strtolower($value);
+    public ?int $id = null;
+    public string $email;
+    public string $password;
+    public private(set) string $type;
+
+    /** @var Collection<int, Role> */
+    public Collection $userRoles;
+
+    public function __construct()
+    {
+        $this->userRoles = new ArrayCollection();
     }
-
-    /**
-     * @var string The hashed password
-     */
-    #[ORM\Column]
-    public ?string $password = null {
-        set => $value;
-    }
-
-    /**
-     * @var list<string> The user roles
-     */
-    #[ORM\Column]
-    private array $roles = [];
 
     /**
      * A visual identifier that represents this user.
@@ -51,19 +41,43 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     public function getRoles(): array
     {
-        $roles = $this->roles;
-        $roles[] = 'ROLE_USER';
+        $roles = ['ROLE_USER'];
+
+        foreach ($this->userRoles as $role) {
+            $roles[] = 'ROLE_' . strtoupper($role->name);
+
+            foreach ($role->permissions as $permission) {
+                $roles[] = $permission->name->value;
+            }
+        }
 
         return array_unique($roles);
     }
 
     /**
-     * @param list<string> $roles
+     * @param Collection<int, Role> $userRoles
      */
-    public function setRoles(array $roles): static
+    public function setUserRoles(Collection $userRoles): static
     {
-        $this->roles = $roles;
+        $this->userRoles = $userRoles;
 
+        return $this;
+    }
+
+    public function addRole(Role $role): static
+    {
+        if (!$this->userRoles->contains($role)) {
+            $this->userRoles->add($role);
+        }
+
+        return $this;
+    }
+
+    public function removeRole(Role $role): static
+    {
+        if ($this->userRoles->contains($role)) {
+            $this->userRoles->removeElement($role);
+        }
         return $this;
     }
 

@@ -1,0 +1,28 @@
+nelmio_api_doc:
+    html_config:
+        assets_mode: cdn
+        swagger_ui_config:
+            displayRequestDuration: true
+            docExpansion: 'list'
+            filter: true
+            defaultModelsExpandDepth: 3
+            syntaxHighlight.theme: 'monokai'
+
+    documentation:
+        info:
+            title: StockFlow API
+            version: 1.0.0
+        components:
+            securitySchemes:
+                Bearer:
+                    type: http
+                    scheme: bearer
+                    bearerFormat: JWT
+
+        security:
+            -   Bearer: [ ]
+
+    areas:
+        default:
+            path_patterns:
+                - ^/api(?!/doc$)

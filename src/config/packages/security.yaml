@@ -37,6 +37,10 @@ security:
     access_control:
         - { path: ^/api/identity/login, roles: PUBLIC_ACCESS }
         - { path: ^/api/identity/register, roles: PUBLIC_ACCESS }
+        # todo: change roles for prod
+        - { path: ^/api/doc, roles: PUBLIC_ACCESS }
+
+#        - { path: ^/api, roles: PUBLIC_ACCESS }
         - { path: ^/api, roles: IS_AUTHENTICATED_FULLY }
 
 when@test:

@@ -4,51 +4,67 @@ declare(strict_types=1);
 
 namespace StockFlow\Identity\Infrastructure\Controller;
 
+use Nelmio\ApiDocBundle\Attribute\Model;
 use StockFlow\Identity\Application\Command\ChangePasswordCommand;
 use StockFlow\Identity\Application\Command\CreateUserCommand;
 use StockFlow\Identity\Application\Query\GetCurrentUserDataQuery;
+use StockFlow\Identity\Domain\Dto\UserResponse;
 use StockFlow\Shared\Application\Command\CommandBusInterface;
 use StockFlow\Shared\Application\Query\QueryBusInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Attribute\MapQueryString;
 use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
 use Symfony\Component\Routing\Attribute\Route;
+use OpenApi\Attributes as OA;
 
+#[OA\Tag(name: 'Authentication')]
+#[Route('/api/identity', name: 'api_identity_')]
 class AuthenticationController extends AbstractController
 {
-    #[Route('api/identity/register', name: 'register', methods: ['POST'])]
+    #[Route('/register', name: 'register', methods: ['POST'])]
+    #[OA\Post(summary: 'Регистрация')]
+    #[OA\Response(response: 201, description: 'Created', content: new OA\JsonContent(properties: [
+        new OA\Property(property: 'successful', type: 'boolean', example: true),
+        new OA\Property(property: 'data', type: 'integer')
+    ]))]
     public function register(
-        #[MapRequestPayload(acceptFormat: 'json')] CreateUserCommand $command,
-        CommandBusInterface $commandBus
-    ): Response {
-        $response = $commandBus->execute($command);
-
-        return new JsonResponse($response, Response::HTTP_CREATED);
-    }
-
-    #[Route('api/identity/login', name: 'login', methods: ['POST'])]
-    public function authenticate()
+        #[MapRequestPayload] CreateUserCommand $cmd,
+        CommandBusInterface $bus
+    ): mixed
     {
+        return new JsonResponse($bus->execute($cmd), Response::HTTP_CREATED);
     }
 
-    #[Route('api/identity/user-data', name: 'user', methods: ['GET'])]
+    #[Route('/login', name: 'login', methods: ['POST'])]
+    #[OA\Post(summary: 'JWT Login', requestBody: new OA\RequestBody(content: new OA\JsonContent(properties: [
+        new OA\Property(property: 'email', type: 'string'),
+        new OA\Property(property: 'password', type: 'string')
+    ])))]
+    public function authenticate(): void {}
+
+    #[Route('/user-data', name: 'user', methods: ['GET'])]
+    #[OA\Get(summary: 'Профиль')]
+    #[OA\Response(response: 200, description: 'OK', content: new OA\JsonContent(properties: [
+        new OA\Property(property: 'successful', type: 'boolean', example: true),
+        new OA\Property(property: 'data', ref: new Model(type: UserResponse::class))
+    ]))]
     public function getCurrentUserData(
-        #[MapRequestPayload(acceptFormat: 'json')] GetCurrentUserDataQuery $query,
-        QueryBusInterface $queryBus
-    ): Response {
-        $response = $queryBus->execute($query);
-
-        return new JsonResponse($response, Response::HTTP_OK);
+        #[MapQueryString] GetCurrentUserDataQuery $query,
+        QueryBusInterface $bus
+    ): mixed
+    {
+        return new JsonResponse($bus->execute($query));
     }
 
-    #[Route('api/identity/change-password', name: 'change-password', methods: ['POST'])]
+    #[Route('/change-password', name: 'change-password', methods: ['POST'])]
+    #[OA\Post(summary: 'Смена пароля')]
     public function changePassword(
-        #[MapRequestPayload(acceptFormat: 'json')] ChangePasswordCommand $command,
-        CommandBusInterface $commandBus
-    ): Response {
-        $response = $commandBus->execute($command);
-
-        return new JsonResponse($response, Response::HTTP_CREATED);
+        #[MapRequestPayload] ChangePasswordCommand $cmd,
+        CommandBusInterface $bus
+    ): mixed
+    {
+        return new JsonResponse($bus->execute($cmd));
     }
 }
