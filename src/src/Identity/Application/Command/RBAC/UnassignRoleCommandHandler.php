@@ -10,7 +10,6 @@ use StockFlow\Identity\Domain\Security\CurrentUserInterface;
 use StockFlow\Shared\Application\Command\CommandHandlerInterface;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 
-#[AsMessageHandler]
 final readonly class UnassignRoleCommandHandler implements CommandHandlerInterface
 {
     public function __construct(

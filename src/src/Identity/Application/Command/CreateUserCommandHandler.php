@@ -12,7 +12,6 @@ use StockFlow\Shared\Application\Command\CommandHandlerInterface;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
-#[AsMessageHandler]
 readonly class CreateUserCommandHandler implements CommandHandlerInterface
 {
     public function __construct(

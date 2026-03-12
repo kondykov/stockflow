@@ -9,7 +9,6 @@ use StockFlow\Shared\Application\Query\QueryHandlerInterface;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 
-#[AsMessageHandler]
 readonly class GetCurrentUserDataQueryHandler implements QueryHandlerInterface
 {
     public function __construct(
