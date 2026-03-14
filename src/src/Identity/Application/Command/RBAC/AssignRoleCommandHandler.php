@@ -3,12 +3,11 @@
 namespace StockFlow\Identity\Application\Command\RBAC;
 
 use Assert\Assert;
+use StockFlow\Identity\Application\Security\CurrentUserInterface;
 use StockFlow\Identity\Domain\Entity\Admin;
 use StockFlow\Identity\Domain\Repository\RoleRepositoryInterface;
 use StockFlow\Identity\Domain\Repository\UserRepositoryInterface;
-use StockFlow\Identity\Domain\Security\CurrentUserInterface;
-use StockFlow\Shared\Application\Command\CommandHandlerInterface;
-use Symfony\Component\Messenger\Attribute\AsMessageHandler;
+use StockFlow\Shared\Kernel\Application\Command\CommandHandlerInterface;
 
 final readonly class AssignRoleCommandHandler implements CommandHandlerInterface
 {

@@ -5,7 +5,7 @@ namespace StockFlow\Identity\Infrastructure\Persistence\Doctrine\Repository;
 use Doctrine\Persistence\ManagerRegistry;
 use StockFlow\Identity\Domain\Entity\User;
 use StockFlow\Identity\Domain\Repository\UserRepositoryInterface;
-use StockFlow\Shared\Infrastructure\Persistence\Doctrine\Repository\AbstractRepository;
+use StockFlow\Shared\Kernel\Infrastructure\Persistence\Doctrine\Repository\AbstractRepository;
 
 class UserRepository extends AbstractRepository implements UserRepositoryInterface
 {

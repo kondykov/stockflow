@@ -3,7 +3,7 @@
 namespace StockFlow\Identity\Domain\Repository;
 
 use StockFlow\Identity\Domain\Entity\User;
-use StockFlow\Shared\Domain\Repository\RepositoryInterface;
+use StockFlow\Shared\Kernel\Domain\Repository\RepositoryInterface;
 
 /** @implements RepositoryInterface<User>  */
 interface UserRepositoryInterface extends RepositoryInterface

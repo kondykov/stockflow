@@ -2,7 +2,7 @@
 
 namespace StockFlow\Identity\Domain\Entity\RBAC;
 
-use StockFlow\Identity\Domain\ValueObject\RBAC\Permission;
+use StockFlow\Shared\Identity\Domain\Enum\RBAC\Permission;
 
 class Role
 {

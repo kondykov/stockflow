@@ -4,8 +4,10 @@ namespace StockFlow\Identity\Domain\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use LogicException;
 use StockFlow\Identity\Domain\Entity\RBAC\Role;
-use StockFlow\Shared\Domain\Trait\TimeStamps;
+use StockFlow\Shared\Identity\Domain\Enum\UserType;
+use StockFlow\Shared\Kernel\Domain\Trait\TimeStamps;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
@@ -16,7 +18,13 @@ abstract class User implements UserInterface, PasswordAuthenticatedUserInterface
     public ?int $id = null;
     public string $email;
     public string $password;
-    public private(set) string $type;
+    public UserType $type {
+        get => match(static::class) {
+            Admin::class => UserType::Admin,
+            Manager::class => UserType::Manager,
+            default => throw new LogicException('Неизвестный тип пользователя: ' . static::class),
+        };
+    }
 
     /** @var Collection<int, Role> */
     public Collection $userRoles;
@@ -45,10 +53,6 @@ abstract class User implements UserInterface, PasswordAuthenticatedUserInterface
 
         foreach ($this->userRoles as $role) {
             $roles[] = 'ROLE_' . strtoupper($role->name);
-
-            foreach ($role->permissions as $permission) {
-                $roles[] = $permission->name->value;
-            }
         }
 
         return array_unique($roles);

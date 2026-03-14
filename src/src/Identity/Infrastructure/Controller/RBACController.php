@@ -10,13 +10,14 @@ use StockFlow\Identity\Application\Command\RBAC\AssignRoleCommand;
 use StockFlow\Identity\Application\Command\RBAC\CreateNewRoleCommand;
 use StockFlow\Identity\Application\Command\RBAC\UnassignRoleCommand;
 use StockFlow\Identity\Domain\Dto\PermissionItemResponse;
-use StockFlow\Identity\Domain\ValueObject\RBAC\Permission;
-use StockFlow\Shared\Application\Command\CommandBusInterface;
+use StockFlow\Shared\Identity\Domain\Enum\RBAC\Permission;
+use StockFlow\Shared\Kernel\Application\Command\CommandBusInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[OA\Tag(name: 'RBAC')]
 #[Route('api/identity/rbac', name: 'api_identity_')]
@@ -46,6 +47,7 @@ class RBACController extends AbstractController
     }
 
     #[Route('/role', methods: ['POST'])]
+    #[IsGranted('rbac.create')]
     public function newRole(
         #[MapRequestPayload] CreateNewRoleCommand $cmd,
         CommandBusInterface $bus
@@ -54,6 +56,7 @@ class RBACController extends AbstractController
     }
 
     #[Route('/role/assign', methods: ['POST'])]
+    #[IsGranted('rbac.assign')]
     public function assignRole(
         #[MapRequestPayload] AssignRoleCommand $cmd,
         CommandBusInterface $bus
@@ -62,6 +65,7 @@ class RBACController extends AbstractController
     }
 
     #[Route('/role/unassign', methods: ['DELETE'])]
+    #[IsGranted('rbac.unassign')]
     public function unassignRole(
         #[MapRequestPayload] UnassignRoleCommand $cmd,
         CommandBusInterface $bus

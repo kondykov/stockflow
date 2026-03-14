@@ -5,19 +5,19 @@ declare(strict_types=1);
 namespace StockFlow\Identity\Infrastructure\Controller;
 
 use Nelmio\ApiDocBundle\Attribute\Model;
+use OpenApi\Attributes as OA;
 use StockFlow\Identity\Application\Command\ChangePasswordCommand;
 use StockFlow\Identity\Application\Command\CreateUserCommand;
 use StockFlow\Identity\Application\Query\GetCurrentUserDataQuery;
 use StockFlow\Identity\Domain\Dto\UserResponse;
-use StockFlow\Shared\Application\Command\CommandBusInterface;
-use StockFlow\Shared\Application\Query\QueryBusInterface;
+use StockFlow\Shared\Kernel\Application\Command\CommandBusInterface;
+use StockFlow\Shared\Kernel\Application\Query\QueryBusInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Attribute\MapQueryString;
 use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
 use Symfony\Component\Routing\Attribute\Route;
-use OpenApi\Attributes as OA;
 
 #[OA\Tag(name: 'Authentication')]
 #[Route('/api/identity', name: 'api_identity_')]

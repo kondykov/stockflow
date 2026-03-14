@@ -5,7 +5,7 @@ namespace StockFlow\Identity\Infrastructure\Persistence\Doctrine\Repository;
 use Doctrine\Persistence\ManagerRegistry;
 use StockFlow\Identity\Domain\Entity\RBAC\Role;
 use StockFlow\Identity\Domain\Repository\RoleRepositoryInterface;
-use StockFlow\Shared\Infrastructure\Persistence\Doctrine\Repository\AbstractRepository;
+use StockFlow\Shared\Kernel\Infrastructure\Persistence\Doctrine\Repository\AbstractRepository;
 
 class RoleRepository extends AbstractRepository implements RoleRepositoryInterface
 {

@@ -2,12 +2,11 @@
 
 namespace StockFlow\Identity\Application\Command;
 
+use StockFlow\Identity\Application\Security\CurrentUserInterface;
 use StockFlow\Identity\Domain\Dto\UserResponse;
 use StockFlow\Identity\Domain\Repository\UserRepositoryInterface;
-use StockFlow\Identity\Domain\Security\CurrentUserInterface;
 use StockFlow\Identity\Infrastructure\Extractor\UserExtractor;
-use StockFlow\Shared\Application\Command\CommandHandlerInterface;
-use Symfony\Component\Messenger\Attribute\AsMessageHandler;
+use StockFlow\Shared\Kernel\Application\Command\CommandHandlerInterface;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 readonly class ChangePasswordCommandHandler implements CommandHandlerInterface

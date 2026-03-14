@@ -4,7 +4,7 @@ namespace StockFlow\Identity\Infrastructure\Extractor;
 
 use StockFlow\Identity\Domain\Dto\UserResponse;
 use StockFlow\Identity\Domain\Entity\User;
-use StockFlow\Shared\Infrastructure\Extractor\ExtractorInterface;
+use StockFlow\Shared\Kernel\Infrastructure\Extractor\ExtractorInterface;
 
 /**
  * @implements ExtractorInterface<User, UserResponse>

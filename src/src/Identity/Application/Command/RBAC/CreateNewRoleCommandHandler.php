@@ -3,12 +3,12 @@
 namespace StockFlow\Identity\Application\Command\RBAC;
 
 use Assert\Assert;
+use StockFlow\Identity\Application\Security\CurrentUserInterface;
 use StockFlow\Identity\Domain\Entity\Admin;
 use StockFlow\Identity\Domain\Entity\RBAC\Role;
 use StockFlow\Identity\Domain\Repository\RoleRepositoryInterface;
-use StockFlow\Identity\Domain\Security\CurrentUserInterface;
-use StockFlow\Shared\Application\Command\CommandHandlerInterface;
-use Symfony\Component\Messenger\Attribute\AsMessageHandler;
+use StockFlow\Shared\Identity\Domain\Enum\RBAC\Permission;
+use StockFlow\Shared\Kernel\Application\Command\CommandHandlerInterface;
 
 readonly class CreateNewRoleCommandHandler implements CommandHandlerInterface
 {
@@ -36,7 +36,12 @@ readonly class CreateNewRoleCommandHandler implements CommandHandlerInterface
             ->verifyNow();
 
         $role = new Role($command->role);
-        $role->permissions = $command->permissions;
+        $enums = array_map(
+            static fn(string $value) => Permission::from($value),
+            $command->permissions
+        );
+
+        $role->permissions = $enums;
 
         $this->roleRepository->save($role);
 

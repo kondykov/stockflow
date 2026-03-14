@@ -2,8 +2,8 @@
 
 namespace StockFlow\Identity\Infrastructure\Security;
 
+use StockFlow\Identity\Application\Security\CurrentUserInterface;
 use StockFlow\Identity\Domain\Entity\User;
-use StockFlow\Identity\Domain\Security\CurrentUserInterface;
 use Symfony\Bundle\SecurityBundle\Security;
 
 final readonly class SymfonyCurrentUser implements CurrentUserInterface

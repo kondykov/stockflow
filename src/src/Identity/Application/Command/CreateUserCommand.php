@@ -2,7 +2,7 @@
 
 namespace StockFlow\Identity\Application\Command;
 
-use StockFlow\Shared\Application\Command\CommandInterface;
+use StockFlow\Shared\Kernel\Application\Command\CommandInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[Assert\Expression(

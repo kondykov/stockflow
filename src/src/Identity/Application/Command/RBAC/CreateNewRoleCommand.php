@@ -2,7 +2,7 @@
 
 namespace StockFlow\Identity\Application\Command\RBAC;
 
-use StockFlow\Shared\Application\Command\CommandInterface;
+use StockFlow\Shared\Kernel\Application\Command\CommandInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 
 final readonly class CreateNewRoleCommand implements CommandInterface
