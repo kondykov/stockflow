@@ -2,9 +2,9 @@
 
 namespace StockFlow\Identity\Application\Query;
 
+use StockFlow\Identity\Application\Extractor\UserExtractor;
 use StockFlow\Identity\Application\Security\CurrentUserInterface;
 use StockFlow\Identity\Domain\Dto\UserResponse;
-use StockFlow\Identity\Infrastructure\Extractor\UserExtractor;
 use StockFlow\Shared\Kernel\Application\Query\QueryHandlerInterface;
 
 readonly class GetCurrentUserDataQueryHandler implements QueryHandlerInterface

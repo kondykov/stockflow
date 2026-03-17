@@ -47,7 +47,7 @@ class RBACController extends AbstractController
     }
 
     #[Route('/role', methods: ['POST'])]
-    #[IsGranted('rbac.create')]
+    #[IsGranted(Permission::UserEdit->value)]
     public function newRole(
         #[MapRequestPayload] CreateNewRoleCommand $cmd,
         CommandBusInterface $bus

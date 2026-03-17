@@ -21,6 +21,15 @@ doctrine:
                 prefix: 'StockFlow\Identity\Domain\Entity'
                 alias: Identity
                 mapping: true
+
+            Warehouse:
+                type: xml
+                is_bundle: false
+                dir: '%kernel.project_dir%/src/Warehouse/Infrastructure/Persistence/Doctrine/Mapping'
+                prefix: 'StockFlow\Warehouse\Domain'
+                alias: Warehouse
+                mapping: true
+
         controller_resolver:
             auto_mapping: false
 

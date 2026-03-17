@@ -17,7 +17,7 @@ final readonly class CreateNewRoleCommand implements CommandInterface
         #[Assert\All([
             new Assert\Type(type: 'string', message: 'Пермишен должен быть строкой'),
             new Assert\Choice(
-                callback: 'StockFlow\Identity\Domain\ValueObject\RBAC\Permission::values',
+                callback: 'StockFlow\Shared\Identity\Domain\Enum\RBAC\Permission::values',
                 message: 'Выбран неверный пермишен: {{ value }}'
             )
         ])]

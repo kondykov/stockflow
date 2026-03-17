@@ -5,8 +5,8 @@ namespace StockFlow\Shared\Kernel\Domain\Trait;
 
 trait TimeStamps
 {
-    public \DateTimeImmutable $createdAt;
-    public \DateTimeImmutable $updatedAt;
+    public private(set) \DateTimeImmutable $createdAt;
+    public private(set) \DateTimeImmutable $updatedAt;
 
     public function setInitialTimestamps(): void
     {

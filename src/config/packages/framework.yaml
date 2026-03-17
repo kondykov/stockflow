@@ -2,6 +2,12 @@ framework:
     secret: '%env(APP_SECRET)%'
     session: true
 
+    default_locale: ru
+    translator:
+        default_path: '%kernel.project_dir%/translations'
+        fallbacks:
+            - ru
+
     exceptions:
         Assert\AssertionFailedException:
             log_level: notice

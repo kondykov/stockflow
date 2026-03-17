@@ -3,6 +3,8 @@
 namespace StockFlow\Shared\Kernel\Infrastructure\Persistence\Doctrine\Repository;
 
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
 use StockFlow\Shared\Kernel\Domain\Repository\RepositoryInterface;
@@ -32,5 +34,14 @@ abstract class AbstractRepository extends ServiceEntityRepository implements Rep
     public function findById(int|string $id): ?object
     {
         return $this->find($id);
+    }
+
+    public function findAllPaginated(int $page, int $pageSize): Collection
+    {
+        $queryBuilder = $this->createQueryBuilder('e')
+            ->setFirstResult(($page - 1) * $pageSize)
+            ->setMaxResults($pageSize);
+
+        return new ArrayCollection($queryBuilder->getQuery()->getResult());
     }
 }

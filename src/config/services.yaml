@@ -20,6 +20,7 @@ services:
         resource: '../src/'
         exclude:
             - '../src/**/Domain/Entity/'
+            - '../src/**/Domain/Aggregate/'
             - '../src/**/Domain/ValueObject/'
             - '../src/Kernel.php'
 

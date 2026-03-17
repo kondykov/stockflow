@@ -14,8 +14,11 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\ExceptionEvent;
 use Symfony\Component\HttpKernel\Event\ResponseEvent;
 use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
+use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\Messenger\Exception\HandlerFailedException;
+use Symfony\Component\Serializer\Exception\UnsupportedFormatException;
+use Symfony\Component\TypeInfo\Exception\UnsupportedException;
 use Symfony\Component\Validator\Exception\ValidationFailedException;
 
 final readonly class ApiResponseListener
@@ -61,7 +64,7 @@ final readonly class ApiResponseListener
     {
         $exception = $event->getThrowable();
 
-        if ($exception instanceof HandlerFailedException && $exception->getPrevious()) {
+        if (($exception instanceof HandlerFailedException || $exception instanceof UnprocessableEntityHttpException) && $exception->getPrevious()) {
             $exception = $exception->getPrevious();
         }
 
@@ -69,7 +72,7 @@ final readonly class ApiResponseListener
         $isLazyAssertion = $exception instanceof LazyAssertionException;
         $isAssert = $exception instanceof AssertException;
 
-        if (!$isValidation && !$isAssert && $this->env === 'dev' && $this->useWhoops) {
+        if ((!$isValidation && !$isLazyAssertion && !$isAssert) && $this->env === 'dev' && $this->useWhoops) {
             return;
         }
 

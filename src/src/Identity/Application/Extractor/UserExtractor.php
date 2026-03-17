@@ -1,6 +1,6 @@
 <?php
 
-namespace StockFlow\Identity\Infrastructure\Extractor;
+namespace StockFlow\Identity\Application\Extractor;
 
 use StockFlow\Identity\Domain\Dto\UserResponse;
 use StockFlow\Identity\Domain\Entity\User;

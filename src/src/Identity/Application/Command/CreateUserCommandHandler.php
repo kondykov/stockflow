@@ -3,10 +3,10 @@
 namespace StockFlow\Identity\Application\Command;
 
 use Assert\Assert;
+use StockFlow\Identity\Application\Extractor\UserExtractor;
 use StockFlow\Identity\Domain\Dto\UserResponse;
 use StockFlow\Identity\Domain\Entity\Manager;
 use StockFlow\Identity\Domain\Repository\UserRepositoryInterface;
-use StockFlow\Identity\Infrastructure\Extractor\UserExtractor;
 use StockFlow\Shared\Kernel\Application\Command\CommandHandlerInterface;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
