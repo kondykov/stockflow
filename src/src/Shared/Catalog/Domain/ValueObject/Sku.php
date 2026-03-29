@@ -1,0 +1,12 @@
+<?php
+
+namespace StockFlow\Shared\Catalog\Domain\ValueObject;
+
+readonly class Sku
+{
+    public function __construct(
+        public string $code,
+        public string $name,
+    ) {
+    }
+}

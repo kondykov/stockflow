@@ -17,6 +17,9 @@ final readonly class UserResponse
         #[OA\Property(example: ['ROLE_USER'])]
         public array $roles,
 
+        #[OA\Property(example: 'true')]
+        public bool $isAdmin,
+
         #[OA\Property(example: "2026-03-11T15:00:00+00:00")]
         public string $createdAt,
 

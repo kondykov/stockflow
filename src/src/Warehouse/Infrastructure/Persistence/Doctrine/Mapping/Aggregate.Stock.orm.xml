@@ -4,17 +4,17 @@
                   xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping
     https://www.doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
 
-    <entity name="StockFlow\Warehouse\Domain\Aggregate\Stock" table="wh_stock">
+    <entity name="StockFlow\Warehouse\Domain\Aggregate\Stock" table="wh_stocks">
         <id name="id" type="integer" column="id">
             <generator strategy="IDENTITY"/>
         </id>
 
-        <many-to-one field="warehouse" target-entity="StockFlow\Warehouse\Domain\Entity\Warehouse" fetch="LAZY">
+        <many-to-one field="warehouse" target-entity="StockFlow\Warehouse\Domain\Entity\Warehouse">
             <join-column name="warehouse_id" nullable="false" on-delete="CASCADE"/>
         </many-to-one>
 
-        <many-to-one field="product" target-entity="StockFlow\Warehouse\Domain\Entity\Product" fetch="LAZY">
-            <join-column name="product_id" nullable="false" on-delete="CASCADE"/>
+        <many-to-one field="item" target-entity="StockFlow\Warehouse\Domain\Entity\StockItem">
+            <join-column name="stock_id" nullable="false" on-delete="CASCADE"/>
         </many-to-one>
 
         <field name="onHands" type="integer" column="on_hands"/>

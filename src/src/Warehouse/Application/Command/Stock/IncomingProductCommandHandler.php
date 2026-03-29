@@ -6,7 +6,7 @@ use Assert\Assert;
 use StockFlow\Shared\Kernel\Application\Command\CommandHandlerInterface;
 use StockFlow\Warehouse\Application\Extractor\StockExtractor;
 use StockFlow\Warehouse\Domain\Aggregate\Stock;
-use StockFlow\Warehouse\Domain\Repository\ProductRepositoryInterface;
+use StockFlow\Warehouse\Domain\Repository\StockItemRepositoryInterface;
 use StockFlow\Warehouse\Domain\Repository\StockRepositoryInterface;
 use StockFlow\Warehouse\Domain\Repository\WarehouseRepositoryInterface;
 use StockFlow\Warehouse\Domain\ValueObject\StockResponse;
@@ -17,7 +17,7 @@ readonly class IncomingProductCommandHandler implements CommandHandlerInterface
         private StockExtractor $extractor,
 
         private StockRepositoryInterface $stockRepository,
-        private ProductRepositoryInterface $productRepository,
+        private StockItemRepositoryInterface $productRepository,
         private WarehouseRepositoryInterface $warehouseRepository,
     ) {
     }
@@ -39,7 +39,7 @@ readonly class IncomingProductCommandHandler implements CommandHandlerInterface
 
             $stock = new Stock(
                 warehouse: $wh,
-                product: $product,
+	            item: $product,
                 quantity: $command->quantity,
             );
         }

@@ -8,7 +8,11 @@ use Nelmio\ApiDocBundle\Attribute\Model;
 use OpenApi\Attributes as OA;
 use StockFlow\Identity\Application\Command\ChangePasswordCommand;
 use StockFlow\Identity\Application\Command\CreateUserCommand;
+use StockFlow\Identity\Application\Command\DeleteUserCommand;
+use StockFlow\Identity\Application\Command\UpdateUserCommand;
 use StockFlow\Identity\Application\Query\GetCurrentUserDataQuery;
+use StockFlow\Identity\Application\Query\GetUserQuery;
+use StockFlow\Identity\Application\Query\GetUsersQuery;
 use StockFlow\Identity\Domain\Dto\UserResponse;
 use StockFlow\Shared\Kernel\Application\Command\CommandBusInterface;
 use StockFlow\Shared\Kernel\Application\Query\QueryBusInterface;
@@ -32,8 +36,7 @@ class AuthenticationController extends AbstractController
     public function register(
         #[MapRequestPayload] CreateUserCommand $cmd,
         CommandBusInterface $bus
-    ): mixed
-    {
+    ): mixed {
         return new JsonResponse($bus->execute($cmd), Response::HTTP_CREATED);
     }
 
@@ -42,7 +45,9 @@ class AuthenticationController extends AbstractController
         new OA\Property(property: 'email', type: 'string'),
         new OA\Property(property: 'password', type: 'string')
     ])))]
-    public function authenticate(): void {}
+    public function authenticate(): void
+    {
+    }
 
     #[Route('/user-data', name: 'user', methods: ['GET'])]
     #[OA\Get(summary: 'Профиль')]
@@ -53,8 +58,7 @@ class AuthenticationController extends AbstractController
     public function getCurrentUserData(
         #[MapQueryString] GetCurrentUserDataQuery $query,
         QueryBusInterface $bus
-    ): mixed
-    {
+    ): mixed {
         return new JsonResponse($bus->execute($query));
     }
 
@@ -63,8 +67,7 @@ class AuthenticationController extends AbstractController
     public function changePassword(
         #[MapRequestPayload] ChangePasswordCommand $cmd,
         CommandBusInterface $bus
-    ): mixed
-    {
+    ): mixed {
         return new JsonResponse($bus->execute($cmd));
     }
 }

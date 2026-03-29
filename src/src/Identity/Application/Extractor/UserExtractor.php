@@ -22,8 +22,10 @@ final readonly class UserExtractor implements ExtractorInterface
             email: $entity->email,
             roles: $entity->getRoles(),
 
-            createdAt: $entity->createdAt->format(\DateTimeInterface::ATOM),
-            updatedAt: $entity->updatedAt->format(\DateTimeInterface::ATOM)
+            isAdmin: $entity->isAdmin(),
+
+            createdAt: $entity->createdAt?->format('Y-m-d H:i:s'),
+            updatedAt: $entity->updatedAt?->format('Y-m-d H:i:s'),
         );
     }
 }

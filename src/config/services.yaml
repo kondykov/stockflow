@@ -27,6 +27,8 @@ services:
     StockFlow\Shared\Kernel\Infrastructure\Extractor\ExtractorInterface:
         alias: StockFlow\Identity\Infrastructure\Extractor\UserExtractor
 
+    StockFlow\Catalog\Application\Extractor\ProductExtractor: ~
+
     StockFlow\Shared\Kernel\Infrastructure\EventListener\ApiResponseListener:
         arguments:
             $env: '%kernel.environment%'

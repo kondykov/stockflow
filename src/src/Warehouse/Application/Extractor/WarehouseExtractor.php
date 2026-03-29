@@ -19,6 +19,7 @@ class WarehouseExtractor implements ExtractorInterface
     {
         return new WarehouseResponse(
             id: $entity?->id,
+            userId: $entity->userId,
             name: $entity->name,
             address: $entity->address,
             createdAt: $entity->createdAt?->format('Y-m-d H:i:s'),

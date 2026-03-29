@@ -10,7 +10,7 @@ use StockFlow\Shared\Kernel\Application\Command\CommandBusInterface;
 use StockFlow\Shared\Kernel\Application\Query\QueryBusInterface;
 use StockFlow\Warehouse\Application\Command\CreateProductCommand;
 use StockFlow\Warehouse\Application\Query\GetAllProductsQuery;
-use StockFlow\Warehouse\Domain\ValueObject\ProductResponse;
+use StockFlow\Warehouse\Domain\ValueObject\StockItemResponse;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -36,7 +36,7 @@ class ProductController extends AbstractController
                 response: 201,
                 description: 'Продукт успешно создан',
                 content: new OA\JsonContent(
-                    ref: new Model(type: ProductResponse::class)
+                    ref: new Model(type: StockItemResponse::class)
                 )
             ),
             new OA\Response(
@@ -89,7 +89,7 @@ class ProductController extends AbstractController
                 response: 200,
                 description: 'Список продуктов',
                 content: new OA\JsonContent(
-                    ref: new Model(type: ProductResponse::class)
+                    ref: new Model(type: StockItemResponse::class)
                 )
             ),
             new OA\Response(

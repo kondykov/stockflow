@@ -3,6 +3,7 @@
 namespace StockFlow\Warehouse\Application\Command;
 
 use Assert\Assert;
+use StockFlow\Shared\Identity\Application\Contract\Security\CurrentUserReferenceInterface;
 use StockFlow\Shared\Kernel\Application\Command\CommandHandlerInterface;
 use StockFlow\Warehouse\Application\Extractor\WarehouseExtractor;
 use StockFlow\Warehouse\Domain\Entity\Warehouse;
@@ -14,6 +15,7 @@ readonly class CreateWarehouseCommandHandler implements CommandHandlerInterface
     public function __construct(
         private WarehouseExtractor $extractor,
         private WarehouseRepositoryInterface $repository,
+        private CurrentUserReferenceInterface $currentUserReference
     ) {
     }
 
@@ -21,10 +23,16 @@ readonly class CreateWarehouseCommandHandler implements CommandHandlerInterface
     {
         $exists = $this->repository->findByNameAndAddress($command->name, $command->address);
 
-        Assert::that($exists,  'Склад с таким именем уже существует', 'name')
+        Assert::that($exists, 'Склад с таким именем уже существует', 'name')
             ->null();
 
-        $wh = new Warehouse($command->name, $command->address);
+        $user = $this->currentUserReference->getUser();
+
+        $wh = new Warehouse(
+            userId: $user->id,
+            name: $command->name,
+            address: $command->address,
+        );
         $this->repository->save($wh);
 
         return $this->extractor->extract($wh);

@@ -20,7 +20,7 @@ class StockExtractor implements ExtractorInterface
 	{
 		return new StockResponse(
             warehouseId: $entity->warehouse->id,
-            productId: $entity->product->id,
+            productId: $entity->item->id,
             onHand: $entity->onHands,
         );
 	}
