@@ -8,10 +8,8 @@ use Nelmio\ApiDocBundle\Attribute\Model;
 use OpenApi\Attributes as OA;
 use StockFlow\Identity\Application\Command\ChangePasswordCommand;
 use StockFlow\Identity\Application\Command\CreateUserCommand;
-use StockFlow\Identity\Application\Command\DeleteUserCommand;
-use StockFlow\Identity\Application\Command\UpdateUserCommand;
 use StockFlow\Identity\Application\Query\GetCurrentUserDataQuery;
-use StockFlow\Identity\Application\Query\GetUserQuery;
+use StockFlow\Identity\Application\Query\GetUserByIdQuery;
 use StockFlow\Identity\Application\Query\GetUsersQuery;
 use StockFlow\Identity\Domain\Dto\UserResponse;
 use StockFlow\Shared\Kernel\Application\Command\CommandBusInterface;
@@ -69,5 +67,55 @@ class AuthenticationController extends AbstractController
         CommandBusInterface $bus
     ): mixed {
         return new JsonResponse($bus->execute($cmd));
+    }
+
+    #[Route('/users', name: 'users', methods: ['GET'])]
+    #[OA\Get(summary: 'Список пользователей')]
+    #[OA\Response(
+        response: 200,
+        description: 'OK',
+        content: new OA\JsonContent(
+            properties: [
+                new OA\Property(property: 'successful', type: 'boolean', example: true),
+                new OA\Property(property: 'message', type: 'string', nullable: true),
+                new OA\Property(
+                    property: 'data',
+                    type: 'array',
+                    items: new OA\Items(ref: new Model(type: UserResponse::class))
+                )
+            ]
+        )
+    )]
+    public function getUsers(
+        #[MapQueryString] GetUsersQuery $query,
+        QueryBusInterface $bus
+    ): JsonResponse {
+        return new JsonResponse($bus->execute($query));
+    }
+
+    #[Route('/users/{id}', name: 'get_user_by_id', methods: ['GET'])]
+    #[OA\Get(summary: 'Пользователь по ID')]
+    #[OA\Response(
+        response: 200,
+        description: 'OK',
+        content: new OA\JsonContent(
+            properties: [
+                new OA\Property(property: 'successful', type: 'boolean', example: true),
+                new OA\Property(property: 'message', type: 'string', nullable: true),
+                new OA\Property(
+                    property: 'data',
+                    type: 'array',
+                    items: new OA\Items(ref: new Model(type: UserResponse::class))
+                )
+            ]
+        )
+    )]
+    public function getUserById(
+        int $id,
+        QueryBusInterface $bus
+    ): mixed {
+        $query = new GetUserByIdQuery(id: $id);
+
+        return new JsonResponse($bus->execute($query));
     }
 }

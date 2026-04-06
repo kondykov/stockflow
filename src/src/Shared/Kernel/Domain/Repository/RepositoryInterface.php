@@ -2,7 +2,7 @@
 
 namespace StockFlow\Shared\Kernel\Domain\Repository;
 
-use Doctrine\Common\Collections\Collection;
+use StockFlow\Shared\Kernel\Domain\ValueObject\PaginatedResponse;
 
 /**
  * @template T of object
@@ -25,5 +25,5 @@ interface RepositoryInterface
      */
     public function findById(int|string $id): ?object;
 
-    public function findAllPaginated(int $page, int $pageSize): Collection;
+    public function findAllPaginated(int $page = 1, int $pageSize = 20): PaginatedResponse;
 }

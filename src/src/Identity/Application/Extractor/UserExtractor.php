@@ -2,8 +2,10 @@
 
 namespace StockFlow\Identity\Application\Extractor;
 
+use StockFlow\Identity\Application\Security\RoleNameNormalizer;
 use StockFlow\Identity\Domain\Dto\UserResponse;
 use StockFlow\Identity\Domain\Entity\User;
+use StockFlow\Identity\Infrastructure\Persistence\Doctrine\Repository\RoleRepository;
 use StockFlow\Shared\Kernel\Infrastructure\Extractor\ExtractorInterface;
 
 /**
@@ -11,6 +13,12 @@ use StockFlow\Shared\Kernel\Infrastructure\Extractor\ExtractorInterface;
  */
 final readonly class UserExtractor implements ExtractorInterface
 {
+    public function __construct(
+        private RoleNameNormalizer $normalizer,
+        private RoleRepository $roleRepository,
+    ) {
+    }
+
     /**
      * @inheritDoc
      */
@@ -20,7 +28,8 @@ final readonly class UserExtractor implements ExtractorInterface
             id: $entity->id,
 
             email: $entity->email,
-            roles: $entity->getRoles(),
+            username: $entity->name,
+            rolesIds: $this->roleRepository->findIdsByNames($this->normalizer->normalizeArray($entity->getRoles())),
 
             isAdmin: $entity->isAdmin(),
 

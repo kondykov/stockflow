@@ -1,20 +1,21 @@
 <?php
 
-namespace StockFlow\Identity\Application\Query\RBAC;
+namespace StockFlow\Identity\Application\Query;
 
-use StockFlow\Identity\Application\Extractor\RoleExtractor;
-use StockFlow\Identity\Domain\Repository\RoleRepositoryInterface;
+use StockFlow\Identity\Application\Extractor\UserExtractor;
+use StockFlow\Identity\Domain\Repository\UserRepositoryInterface;
 use StockFlow\Shared\Kernel\Application\Extractor\PaginationExtractor;
 use StockFlow\Shared\Kernel\Application\Query\QueryHandlerInterface;
-readonly class GetRolesQueryHandler implements QueryHandlerInterface
+
+readonly class GetUsersQueryHandler implements QueryHandlerInterface
 {
     public function __construct(
-        private RoleExtractor $extractor,
-        private RoleRepositoryInterface $repository,
+        private UserRepositoryInterface $repository,
+        private UserExtractor $extractor
     ) {
     }
 
-    public function __invoke(GetRolesQuery $query): array
+    public function __invoke(GetUsersQuery $query): array
     {
         $data = $this->repository->findAllPaginated(
             page: $query->page,

@@ -23,4 +23,23 @@ class RoleRepository extends AbstractRepository implements RoleRepositoryInterfa
 
         return $qb->getQuery()->getOneOrNullResult();
     }
+
+    public function findIdsByNames(array $names): array
+    {
+        return $this->createQueryBuilder('r')
+            ->select('r.id')
+            ->where('r.name IN (:names)')
+            ->setParameter('names', $names)
+            ->getQuery()
+            ->getSingleColumnResult();
+    }
+
+    public function findByNames(array $names): array
+    {
+        return $this->createQueryBuilder('r')
+            ->where('r.name IN (:names)')
+            ->setParameter('names', $names)
+            ->getQuery()
+            ->getResult();
+    }
 }

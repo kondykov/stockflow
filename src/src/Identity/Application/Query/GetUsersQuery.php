@@ -1,11 +1,12 @@
 <?php
 
-namespace StockFlow\Identity\Application\Query\RBAC;
+namespace StockFlow\Identity\Application\Query;
 
 use StockFlow\Shared\Kernel\Application\Query\QueryInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 
-class GetRolesQuery implements QueryInterface
+
+class GetUsersQuery implements QueryInterface
 {
     public function __construct(
         #[Assert\Positive(message: "Номер страницы должен быть положительным")]

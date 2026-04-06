@@ -10,7 +10,7 @@ final readonly class CreateNewRoleCommand implements CommandInterface
     public function __construct(
         #[Assert\NotBlank(message: 'Имя роли не должно быть пустым')]
         #[Assert\Type('string', message: 'Имя роли должно быть строкой')]
-        public string $role,
+        public string $name,
 
         #[Assert\NotBlank(message: 'Список прав не может быть пустым')]
         #[Assert\Type('array', message: 'Права должны быть массивом')]

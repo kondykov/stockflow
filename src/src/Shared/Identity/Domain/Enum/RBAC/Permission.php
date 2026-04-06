@@ -6,6 +6,7 @@ enum Permission: string
 {
     case UserCreate = 'user.create';
     case UserEdit = 'user.edit';
+    case IdentityAccess = 'identity.access';
     case CatalogCreate = 'catalog.create';
     case CatalogEdit = 'catalog.edit';
     case ProductCreate = 'product.create';
@@ -27,6 +28,7 @@ enum Permission: string
             self::ProductCreate => 'Добавление нового продукта',
             self::ProductEdit => 'Редактирование продукта',
             self::ProductDelete => 'Удаление продукта',
+            self::IdentityAccess => 'Доступ к группе страниц "Пользователи"'
         };
     }
 }
