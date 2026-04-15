@@ -1,21 +1,25 @@
 <?php
 
-namespace StockFlow\Catalog\Application\Query;
+namespace StockFlow\Warehouse\Application\Query;
 
-use StockFlow\Catalog\Application\Extractor\ProductExtractor;
-use StockFlow\Catalog\Domain\Repository\ProductRepositoryInterface;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use StockFlow\Shared\Kernel\Application\Query\QueryHandlerInterface;
 use StockFlow\Shared\Kernel\Domain\ValueObject\PaginatedResponse;
+use StockFlow\Warehouse\Application\Extractor\StockItemExtractor;
+use StockFlow\Warehouse\Application\Extractor\WarehouseExtractor;
+use StockFlow\Warehouse\Domain\Repository\StockItemRepositoryInterface;
+use StockFlow\Warehouse\Domain\Repository\WarehouseRepositoryInterface;
 
-final readonly class GetAllProductsQueryHandler implements QueryHandlerInterface
+final readonly class GetAllWarehousesQueryHandler implements QueryHandlerInterface
 {
     public function __construct(
-        private ProductExtractor $extractor,
-        private ProductRepositoryInterface $repository,
+        private WarehouseExtractor $extractor,
+        private WarehouseRepositoryInterface $repository,
     ) {
     }
 
-    public function __invoke(GetAllProductsQuery $query): PaginatedResponse
+    public function __invoke(GetAllWarehousesQuery $query): PaginatedResponse
     {
         $result = $this->repository->findAllPaginated($query->page, $query->pageSize);
 

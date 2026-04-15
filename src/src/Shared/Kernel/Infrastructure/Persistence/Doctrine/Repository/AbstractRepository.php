@@ -3,7 +3,6 @@
 namespace StockFlow\Shared\Kernel\Infrastructure\Persistence\Doctrine\Repository;
 
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
 use StockFlow\Shared\Kernel\Domain\Repository\RepositoryInterface;
@@ -52,14 +51,14 @@ abstract class AbstractRepository extends ServiceEntityRepository implements Rep
             ->getQuery()
             ->getResult();
 
-        $totalPages = (int) ceil($total / $pageSize);
+        $totalPages = (int)ceil($total / $pageSize);
 
         return new PaginatedResponse(
             page: $page,
             perPage: $pageSize,
             totalCount: $total,
             totalPages: $totalPages,
-            hasMorePages: $page >= $totalPages,
+            hasMorePages: $page < $totalPages,
             items: $items
         );
     }

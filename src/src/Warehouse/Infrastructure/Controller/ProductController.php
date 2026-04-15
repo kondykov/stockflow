@@ -9,7 +9,7 @@ use OpenApi\Attributes as OA;
 use StockFlow\Shared\Kernel\Application\Command\CommandBusInterface;
 use StockFlow\Shared\Kernel\Application\Query\QueryBusInterface;
 use StockFlow\Warehouse\Application\Command\CreateProductCommand;
-use StockFlow\Warehouse\Application\Query\GetAllProductsQuery;
+use StockFlow\Warehouse\Application\Query\GetAllStocksQuery;
 use StockFlow\Warehouse\Domain\ValueObject\StockItemResponse;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -106,7 +106,7 @@ class ProductController extends AbstractController
         Request $request,
         QueryBusInterface $bus,
     ): JsonResponse {
-        $query = new GetAllProductsQuery(
+        $query = new GetAllStocksQuery(
             id: (int)$request->query->get('id'),
             page: (int)$request->query->get('page', 1),
             pageSize: (int)$request->query->get('pageSize', 20),
