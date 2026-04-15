@@ -12,7 +12,7 @@ class Role
      * @var list<Permission>
      */
     public array $permissions = [] {
-        set => array_unique($value);
+        set => array_unique($value, SORT_REGULAR);
     }
 
     public function __construct(string $name)

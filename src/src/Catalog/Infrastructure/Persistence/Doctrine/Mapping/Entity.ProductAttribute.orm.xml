@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping"
+                  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                  xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping
+                                      https://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+
+    <entity name="StockFlow\Catalog\Domain\Entity\ProductAttribute" table="catalog_product_attributes">
+
+        <id name="id" type="integer" column="id">
+            <generator strategy="IDENTITY"/>
+        </id>
+
+        <many-to-one field="product"
+                     target-entity="StockFlow\Catalog\Domain\Entity\Product"
+                     inversed-by="attributes">
+            <join-column name="product_id" on-delete="CASCADE" nullable="false"/>
+        </many-to-one>
+
+        <field name="key" column="attr_key" length="255"/>
+        <field name="value" column="attr_value" type="text"/>
+        <field name="createdAt" type="datetime_immutable" column="created_at"/>
+        <field name="updatedAt" type="datetime_immutable" column="updated_at" nullable="true"/>
+
+        <lifecycle-callbacks>
+            <lifecycle-callback type="prePersist" method="setInitialTimestamps"/>
+            <lifecycle-callback type="preUpdate" method="setUpdateTimestamp"/>
+        </lifecycle-callbacks>
+
+    </entity>
+
+</doctrine-mapping>

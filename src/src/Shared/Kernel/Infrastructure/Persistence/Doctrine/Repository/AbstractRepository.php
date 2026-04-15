@@ -3,11 +3,10 @@
 namespace StockFlow\Shared\Kernel\Infrastructure\Persistence\Doctrine\Repository;
 
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
 use StockFlow\Shared\Kernel\Domain\Repository\RepositoryInterface;
+use StockFlow\Shared\Kernel\Domain\ValueObject\PaginatedResponse;
 
 abstract class AbstractRepository extends ServiceEntityRepository implements RepositoryInterface
 {
@@ -36,12 +35,31 @@ abstract class AbstractRepository extends ServiceEntityRepository implements Rep
         return $this->find($id);
     }
 
-    public function findAllPaginated(int $page, int $pageSize): Collection
+    public function findAllPaginated(int $page = 1, int $pageSize = 20): PaginatedResponse
     {
-        $queryBuilder = $this->createQueryBuilder('e')
-            ->setFirstResult(($page - 1) * $pageSize)
-            ->setMaxResults($pageSize);
+        $page = max(1, $page);
+        $pageSize = max(1, min($pageSize, 100));
 
-        return new ArrayCollection($queryBuilder->getQuery()->getResult());
+        $total = $this->createQueryBuilder('e')
+            ->select('COUNT(e.id)')
+            ->getQuery()
+            ->getSingleScalarResult();
+
+        $items = $this->createQueryBuilder('e')
+            ->setFirstResult(($page - 1) * $pageSize)
+            ->setMaxResults($pageSize)
+            ->getQuery()
+            ->getResult();
+
+        $totalPages = (int)ceil($total / $pageSize);
+
+        return new PaginatedResponse(
+            page: $page,
+            perPage: $pageSize,
+            totalCount: $total,
+            totalPages: $totalPages,
+            hasMorePages: $page < $totalPages,
+            items: $items
+        );
     }
 }

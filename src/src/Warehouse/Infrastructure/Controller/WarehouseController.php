@@ -6,15 +6,16 @@ namespace StockFlow\Warehouse\Infrastructure\Controller;
 
 use Nelmio\ApiDocBundle\Attribute\Model;
 use OpenApi\Attributes as OA;
+use StockFlow\Shared\Kernel\Application\Command\CommandBusInterface;
 use StockFlow\Shared\Kernel\Application\Query\QueryBusInterface;
 use StockFlow\Warehouse\Application\Command\CreateWarehouseCommand;
+use StockFlow\Warehouse\Application\Query\GetAllWarehousesQuery;
 use StockFlow\Warehouse\Application\Query\GetWarehouseByIdQuery;
 use StockFlow\Warehouse\Domain\ValueObject\WarehouseResponse;
-use StockFlow\Shared\Kernel\Application\Command\CommandBusInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Attribute\MapQueryString;
 use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
 use Symfony\Component\Routing\Attribute\Route;
 
@@ -92,6 +93,14 @@ class WarehouseController extends AbstractController
     ): JsonResponse {
         $query = new GetWarehouseByIdQuery($id);
 
+        return new JsonResponse($bus->execute($query));
+    }
+
+    #[Route("/", name: 'all', methods: ['GET'])]
+    public function getAll(
+        #[MapQueryString] GetAllWarehousesQuery $query,
+        QueryBusInterface $bus
+    ): JsonResponse {
         return new JsonResponse($bus->execute($query));
     }
 }

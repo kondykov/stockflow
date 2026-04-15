@@ -30,6 +30,24 @@ doctrine:
                 alias: Warehouse
                 mapping: true
 
+            Catalog:
+                type: xml
+                is_bundle: false
+                dir: '%kernel.project_dir%/src/Catalog/Infrastructure/Persistence/Doctrine/Mapping'
+                prefix: 'StockFlow\Catalog\Domain'
+                alias: Catalog
+                mapping: true
+
+
+            SharedCatalog:
+                type: xml
+                is_bundle: false
+                dir: '%kernel.project_dir%/src/Shared/Catalog/Infrastructure/Persistence/Doctrine/Mapping'
+                prefix: 'StockFlow\Shared\Catalog\Domain'
+                alias: SharedCatalog
+                mapping: true
+
+
         controller_resolver:
             auto_mapping: false
 

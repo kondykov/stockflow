@@ -2,26 +2,25 @@
 
 namespace StockFlow\Identity\Application\Query\RBAC;
 
-use StockFlow\Identity\Application\Extractor\UserExtractor;
-use StockFlow\Identity\Domain\Dto\UserResponse;
+use StockFlow\Identity\Application\Extractor\RoleExtractor;
+use StockFlow\Identity\Domain\Repository\RoleRepositoryInterface;
+use StockFlow\Shared\Kernel\Application\Extractor\PaginationExtractor;
 use StockFlow\Shared\Kernel\Application\Query\QueryHandlerInterface;
-use Symfony\Bundle\SecurityBundle\Security;
-use Symfony\Component\Messenger\Attribute\AsMessageHandler;
-
-#[AsMessageHandler]
 readonly class GetRolesQueryHandler implements QueryHandlerInterface
 {
     public function __construct(
-        private Security $security,
-        private UserExtractor $extractor
-    )
-    {
+        private RoleExtractor $extractor,
+        private RoleRepositoryInterface $repository,
+    ) {
     }
 
-    public function __invoke(GetRolesQuery $query): UserResponse
+    public function __invoke(GetRolesQuery $query): array
     {
-        $user = $this->security->getUser();
+        $data = $this->repository->findAllPaginated(
+            page: $query->page,
+            pageSize: $query->pageSize,
+        );
 
-        return $this->extractor->extract($user);
+        return new PaginationExtractor()->extract($data, $this->extractor);
     }
 }

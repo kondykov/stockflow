@@ -11,4 +11,9 @@ class Admin extends User
 
         return array_unique($roles);
     }
+
+    public function isAdmin(): bool
+    {
+        return true;
+    }
 }

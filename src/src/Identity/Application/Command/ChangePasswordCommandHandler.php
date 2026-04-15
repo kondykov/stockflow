@@ -2,6 +2,7 @@
 
 namespace StockFlow\Identity\Application\Command;
 
+use Assert\Assert;
 use StockFlow\Identity\Application\Extractor\UserExtractor;
 use StockFlow\Identity\Application\Security\CurrentUserInterface;
 use StockFlow\Identity\Domain\Dto\UserResponse;
@@ -22,6 +23,9 @@ readonly class ChangePasswordCommandHandler implements CommandHandlerInterface
     public function __invoke(ChangePasswordCommand $command): UserResponse
     {
         $user = $this->currentUser->getUser();
+
+        $isValid = $this->hasher->isPasswordValid($user, $command->oldPassword);
+        Assert::that($isValid)->true('Старый пароль не верный','oldPassword');
 
         $user->password = $this->hasher->hashPassword($user, $command->newPassword);
         $this->repository->save($user);

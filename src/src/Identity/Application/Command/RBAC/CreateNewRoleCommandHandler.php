@@ -25,17 +25,17 @@ readonly class CreateNewRoleCommandHandler implements CommandHandlerInterface
         Assert::that($user, 'Доступно только администраторам', 'user')
             ->isInstanceOf(Admin::class);
 
-        $roleExists = $this->roleRepository->findByName($command->role);
+        $roleExists = $this->roleRepository->findByName($command->name);
 
         Assert::lazy()
             ->that($roleExists, 'role')
             ->null('Роль уже существует')
-            ->that(strtoupper($command->role), 'role')
+            ->that(strtoupper($command->name), 'role')
             ->notContains('ADMIN', 'Название роли не может содержать "ADMIN" (это системный зарезервированный тип)')
             ->notContains('ROLE', 'В названии роли не нужно передавать "ROLE", префикс добавиться автоматически')
             ->verifyNow();
 
-        $role = new Role($command->role);
+        $role = new Role(strtoupper($command->name));
         $enums = array_map(
             static fn(string $value) => Permission::from($value),
             $command->permissions

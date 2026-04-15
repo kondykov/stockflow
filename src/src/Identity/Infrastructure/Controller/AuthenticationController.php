@@ -9,6 +9,8 @@ use OpenApi\Attributes as OA;
 use StockFlow\Identity\Application\Command\ChangePasswordCommand;
 use StockFlow\Identity\Application\Command\CreateUserCommand;
 use StockFlow\Identity\Application\Query\GetCurrentUserDataQuery;
+use StockFlow\Identity\Application\Query\GetUserByIdQuery;
+use StockFlow\Identity\Application\Query\GetUsersQuery;
 use StockFlow\Identity\Domain\Dto\UserResponse;
 use StockFlow\Shared\Kernel\Application\Command\CommandBusInterface;
 use StockFlow\Shared\Kernel\Application\Query\QueryBusInterface;
@@ -32,8 +34,7 @@ class AuthenticationController extends AbstractController
     public function register(
         #[MapRequestPayload] CreateUserCommand $cmd,
         CommandBusInterface $bus
-    ): mixed
-    {
+    ): mixed {
         return new JsonResponse($bus->execute($cmd), Response::HTTP_CREATED);
     }
 
@@ -42,7 +43,9 @@ class AuthenticationController extends AbstractController
         new OA\Property(property: 'email', type: 'string'),
         new OA\Property(property: 'password', type: 'string')
     ])))]
-    public function authenticate(): void {}
+    public function authenticate(): void
+    {
+    }
 
     #[Route('/user-data', name: 'user', methods: ['GET'])]
     #[OA\Get(summary: 'Профиль')]
@@ -53,8 +56,7 @@ class AuthenticationController extends AbstractController
     public function getCurrentUserData(
         #[MapQueryString] GetCurrentUserDataQuery $query,
         QueryBusInterface $bus
-    ): mixed
-    {
+    ): mixed {
         return new JsonResponse($bus->execute($query));
     }
 
@@ -63,8 +65,57 @@ class AuthenticationController extends AbstractController
     public function changePassword(
         #[MapRequestPayload] ChangePasswordCommand $cmd,
         CommandBusInterface $bus
-    ): mixed
-    {
+    ): mixed {
         return new JsonResponse($bus->execute($cmd));
+    }
+
+    #[Route('/users', name: 'users', methods: ['GET'])]
+    #[OA\Get(summary: 'Список пользователей')]
+    #[OA\Response(
+        response: 200,
+        description: 'OK',
+        content: new OA\JsonContent(
+            properties: [
+                new OA\Property(property: 'successful', type: 'boolean', example: true),
+                new OA\Property(property: 'message', type: 'string', nullable: true),
+                new OA\Property(
+                    property: 'data',
+                    type: 'array',
+                    items: new OA\Items(ref: new Model(type: UserResponse::class))
+                )
+            ]
+        )
+    )]
+    public function getUsers(
+        #[MapQueryString] GetUsersQuery $query,
+        QueryBusInterface $bus
+    ): JsonResponse {
+        return new JsonResponse($bus->execute($query));
+    }
+
+    #[Route('/users/{id}', name: 'get_user_by_id', methods: ['GET'])]
+    #[OA\Get(summary: 'Пользователь по ID')]
+    #[OA\Response(
+        response: 200,
+        description: 'OK',
+        content: new OA\JsonContent(
+            properties: [
+                new OA\Property(property: 'successful', type: 'boolean', example: true),
+                new OA\Property(property: 'message', type: 'string', nullable: true),
+                new OA\Property(
+                    property: 'data',
+                    type: 'array',
+                    items: new OA\Items(ref: new Model(type: UserResponse::class))
+                )
+            ]
+        )
+    )]
+    public function getUserById(
+        int $id,
+        QueryBusInterface $bus
+    ): mixed {
+        $query = new GetUserByIdQuery(id: $id);
+
+        return new JsonResponse($bus->execute($query));
     }
 }

@@ -6,11 +6,11 @@ final readonly class WarehouseResponse
 {
     public function __construct(
         public ?int $id,
+        public int $userId,
         public string $name,
         public string $address,
         public ?string $createdAt,
         public ?string $updatedAt,
-    )
-    {
+    ) {
     }
 }

@@ -4,15 +4,16 @@ namespace StockFlow\Warehouse\Domain\Aggregate;
 
 use Assert\Assert;
 use Assert\LazyAssertionException;
+use StockFlow\Shared\Kernel\Domain\Aggregate\AggregateRoot;
 use StockFlow\Shared\Kernel\Domain\Trait\TimeStamps;
-use StockFlow\Warehouse\Domain\Entity\Product;
+use StockFlow\Warehouse\Domain\Entity\StockItem;
 use StockFlow\Warehouse\Domain\Entity\Warehouse;
 
 /**
  * Класс Stock представляет собой агрегат, который управляет количеством товара на складе.
  * Он содержит методы для отгрузки, получения и корректировки количества товара на складе.
  */
-class Stock
+class Stock extends AggregateRoot
 {
     use TimeStamps;
 
@@ -22,7 +23,7 @@ class Stock
 
     public function __construct(
         public Warehouse $warehouse,
-        public Product $product,
+        public StockItem $item,
         ?int $quantity = 0,
     ) {
         $this->onHands = $quantity;

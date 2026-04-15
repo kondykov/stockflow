@@ -9,4 +9,7 @@ use StockFlow\Shared\Kernel\Domain\Repository\RepositoryInterface;
 interface RoleRepositoryInterface extends RepositoryInterface
 {
     public function findByName(string $name): ?Role;
+    /** @return array<Role> */
+    public function findByNames(array $names): array;
+    public function findIdsByNames(array $names): array;
 }
