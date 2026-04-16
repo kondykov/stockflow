@@ -31,7 +31,7 @@ readonly class AdjustmentStockCommandHandler implements CommandHandlerInterface
             ->that($warehouse, 'warehouse')->notEmpty('Склад не найден')
             ->that($warehouse?->userId === $user->id, 'warehouse_access')->true('У вас нет доступа к этому складу')
             ->verifyNow();
-        $stock = $this->stockRepository->findByWarehouseIdAndProductId($command->warehouseId, $command->productId);
+        $stock = $this->stockRepository->findByWarehouseIdAndStockItemId($command->warehouseId, $command->stockItemId);
 
         Assert::that($stock, defaultPropertyPath: 'stock')->notEmpty('Остаток не найден');
 

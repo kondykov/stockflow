@@ -15,13 +15,13 @@ class StockRepository extends AbstractRepository implements StockRepositoryInter
         parent::__construct($registry, Stock::class);
     }
 
-    public function findByWarehouseIdAndProductId(int $warehouseId, int $productId): ?Stock
+    public function findByWarehouseIdAndStockItemId(int $warehouseId, int $stockItemId): ?Stock
     {
         $qb = $this->createQueryBuilder('s')
             ->where('s.warehouse = :warehouseId')
-            ->andWhere('s.item = :productId')
+            ->andWhere('s.item = :stockItemId')
             ->setParameter('warehouseId', $warehouseId)
-            ->setParameter('productId', $productId);
+            ->setParameter('stockItemId', $stockItemId);
 
         return $qb->getQuery()->getOneOrNullResult();
     }

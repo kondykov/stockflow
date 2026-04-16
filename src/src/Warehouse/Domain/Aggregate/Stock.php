@@ -50,7 +50,7 @@ class Stock extends AggregateRoot
 
         $this->record(new StockOutgoingRecorded(
             warehouseId: $this->warehouse->id,
-            productId: $this->item->id,
+            stockItemId: $this->item->id,
             quantity: $quantity,
             aggregateId: $this->id ?? 0,
         ));
@@ -76,7 +76,7 @@ class Stock extends AggregateRoot
 
         $this->record(new StockIncomingRecorded(
             warehouseId: $this->warehouse->id,
-            productId: $this->item->id,
+            stockItemId: $this->item->id,
             quantity: $quantity,
             aggregateId: $this->id ?? 0,
         ));
@@ -101,7 +101,7 @@ class Stock extends AggregateRoot
 
         $this->record(new StockMovementRecorded(
             warehouseId: $this->warehouse->id,
-            productId: $this->item->id,
+            stockItemId: $this->item->id,
             oldQuantity: $this->onHands,
             newQuantity: $quantity,
             aggregateId: $this->id ?? 0,

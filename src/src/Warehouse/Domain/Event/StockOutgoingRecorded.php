@@ -15,7 +15,7 @@ final class StockOutgoingRecorded extends DomainEvent
 {
     public function __construct(
         public readonly int $warehouseId,
-        public readonly int $productId,
+        public readonly int $stockItemId,
         public readonly int $quantity,
         int|string $aggregateId = 0,
         ?DateTimeImmutable $occurredAt = null,

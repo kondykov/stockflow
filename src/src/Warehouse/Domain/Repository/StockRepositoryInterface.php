@@ -7,5 +7,5 @@ use StockFlow\Warehouse\Domain\Aggregate\Stock;
 
 interface StockRepositoryInterface extends RepositoryInterface
 {
-    public function findByWarehouseIdAndProductId(int $warehouseId, int $productId): ?Stock;
+    public function findByWarehouseIdAndStockItemId(int $warehouseId, int $stockItemId): ?Stock;
 }

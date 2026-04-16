@@ -15,7 +15,7 @@ final class StockMovementRecorded extends DomainEvent
 {
     public function __construct(
         public readonly int $warehouseId,
-        public readonly int $productId,
+        public readonly int $stockItemId,
         public readonly int $oldQuantity,
         public readonly int $newQuantity,
         public readonly ?string $reason = null,

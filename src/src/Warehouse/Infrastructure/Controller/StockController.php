@@ -8,8 +8,8 @@ use Nelmio\ApiDocBundle\Attribute\Model;
 use OpenApi\Attributes as OA;
 use StockFlow\Shared\Kernel\Application\Command\CommandBusInterface;
 use StockFlow\Warehouse\Application\Command\Stock\AdjustmentStockCommand;
-use StockFlow\Warehouse\Application\Command\Stock\IncomingProductCommand;
-use StockFlow\Warehouse\Application\Command\Stock\OutgoingProductCommand;
+use StockFlow\Warehouse\Application\Command\Stock\IncomingStockItemCommand;
+use StockFlow\Warehouse\Application\Command\Stock\OutgoingStockItemCommand;
 use StockFlow\Warehouse\Domain\ValueObject\StockResponse;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -27,7 +27,7 @@ class StockController extends AbstractController
         requestBody: new OA\RequestBody(
             required: true,
             content: new OA\JsonContent(
-                ref: new Model(type: IncomingProductCommand::class)
+                ref: new Model(type: IncomingStockItemCommand::class)
             )
         ),
         responses: [
@@ -50,7 +50,7 @@ class StockController extends AbstractController
         ]
     )]
     public function incoming(
-        #[MapRequestPayload] IncomingProductCommand $cmd,
+        #[MapRequestPayload] IncomingStockItemCommand $cmd,
         CommandBusInterface $bus
     ): Response {
         return new JsonResponse($bus->execute($cmd), Response::HTTP_CREATED);
@@ -62,7 +62,7 @@ class StockController extends AbstractController
         requestBody: new OA\RequestBody(
             required: true,
             content: new OA\JsonContent(
-                ref: new Model(type: OutgoingProductCommand::class)
+                ref: new Model(type: OutgoingStockItemCommand::class)
             )
         ),
         responses: [
@@ -84,7 +84,7 @@ class StockController extends AbstractController
         ]
     )]
     public function outgoing(
-        #[MapRequestPayload] OutgoingProductCommand $cmd,
+        #[MapRequestPayload] OutgoingStockItemCommand $cmd,
         CommandBusInterface $bus
     ): Response {
         return new JsonResponse($bus->execute($cmd), Response::HTTP_OK);

@@ -11,7 +11,7 @@ use StockFlow\Warehouse\Domain\Repository\StockRepositoryInterface;
 use StockFlow\Warehouse\Domain\Repository\WarehouseRepositoryInterface;
 use StockFlow\Warehouse\Domain\ValueObject\StockResponse;
 
-readonly class OutgoingProductCommandHandler implements CommandHandlerInterface
+readonly class OutgoingStockItemCommandHandler implements CommandHandlerInterface
 {
     public function __construct(
         private StockExtractor $extractor,
@@ -22,7 +22,7 @@ readonly class OutgoingProductCommandHandler implements CommandHandlerInterface
     ) {
     }
 
-    public function __invoke(OutgoingProductCommand $command): StockResponse
+    public function __invoke(OutgoingStockItemCommand $command): StockResponse
     {
         $user = $this->currentUser->getUser();
         $warehouse = $this->warehouseRepository->findById($command->warehouseId);
@@ -31,7 +31,7 @@ readonly class OutgoingProductCommandHandler implements CommandHandlerInterface
             ->that($warehouse, 'warehouse')->notEmpty('Склад не найден')
             ->that($warehouse?->userId === $user->id, 'warehouse_access')->true('У вас нет доступа к этому складу')
             ->verifyNow();
-        $stock = $this->stockRepository->findByWarehouseIdAndProductId($command->warehouseId, $command->productId);
+        $stock = $this->stockRepository->findByWarehouseIdAndStockItemId($command->warehouseId, $command->stockItemId);
 
         Assert::that($stock, defaultPropertyPath: 'stock')->notEmpty('Остаток не найден');
 

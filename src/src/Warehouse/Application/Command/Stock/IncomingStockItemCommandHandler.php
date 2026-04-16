@@ -15,7 +15,7 @@ use StockFlow\Warehouse\Domain\Repository\StockRepositoryInterface;
 use StockFlow\Warehouse\Domain\Repository\WarehouseRepositoryInterface;
 use StockFlow\Warehouse\Domain\ValueObject\StockResponse;
 
-readonly class IncomingProductCommandHandler implements CommandHandlerInterface
+readonly class IncomingStockItemCommandHandler implements CommandHandlerInterface
 {
     public function __construct(
         private StockExtractor $extractor,
@@ -27,7 +27,7 @@ readonly class IncomingProductCommandHandler implements CommandHandlerInterface
     ) {
     }
 
-    public function __invoke(IncomingProductCommand $command): StockResponse
+    public function __invoke(IncomingStockItemCommand $command): StockResponse
     {
         $user = $this->currentUser->getUser();
         $warehouse = $this->warehouseRepository->findById($command->warehouseId);
@@ -36,24 +36,24 @@ readonly class IncomingProductCommandHandler implements CommandHandlerInterface
             ->that($warehouse, 'warehouse')->notEmpty('Склад не найден')
             ->that($warehouse?->userId === $user->id, 'warehouse_access')->true('У вас нет доступа к этому складу')
             ->verifyNow();
-        $stock = $this->stockRepository->findByWarehouseIdAndProductId($command->warehouseId, $command->productId);
+        $stock = $this->stockRepository->findByWarehouseIdAndStockItemId($command->warehouseId, $command->stockItemId);
 
         if ($stock) {
             $stock->receive($command->quantity);
         } else {
             /** @var Warehouse $wh */
             $wh = $this->warehouseRepository->findById($command->warehouseId);
-            /** @var StockItem $product */
-            $product = $this->stockItemRepository->findById($command->productId);
+            /** @var StockItem $stockItem */
+            $stockItem = $this->stockItemRepository->findById($command->stockItemId);
 
             Assert::lazy()
-                ->that($product, 'productId')->notEmpty('Продукт не найден')
+                ->that($stockItem, 'stockItemId')->notEmpty('Позиция товара не найдена')
                 ->that($wh, 'warehouseId')->notEmpty('Склад не найден')
                 ->verifyNow();
 
             $stock = new Stock(
                 warehouse: $wh,
-	            item: $product,
+	            item: $stockItem,
                 quantity: $command->quantity,
             );
         }
