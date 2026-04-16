@@ -2,11 +2,9 @@
 
 namespace StockFlow\Warehouse\Application\Extractor;
 
-use StockFlow\Shared\Kernel\Infrastructure\Extractor\ExtractorInterface;
+use StockFlow\Shared\Kernel\Application\Extractor\ExtractorInterface;
 use StockFlow\Warehouse\Domain\Entity\StockItem;
-use StockFlow\Warehouse\Domain\Entity\Warehouse;
 use StockFlow\Warehouse\Domain\ValueObject\StockItemResponse;
-use StockFlow\Warehouse\Domain\ValueObject\WarehouseResponse;
 
 /**
  * @implements ExtractorInterface<StockItem, StockItemResponse>

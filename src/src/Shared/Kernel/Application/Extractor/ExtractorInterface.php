@@ -1,6 +1,6 @@
 <?php
 
-namespace StockFlow\Shared\Kernel\Infrastructure\Extractor;
+namespace StockFlow\Shared\Kernel\Application\Extractor;
 
 /**
  * @template T of object

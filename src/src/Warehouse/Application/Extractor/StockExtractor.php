@@ -2,7 +2,7 @@
 
 namespace StockFlow\Warehouse\Application\Extractor;
 
-use StockFlow\Shared\Kernel\Infrastructure\Extractor\ExtractorInterface;
+use StockFlow\Shared\Kernel\Application\Extractor\ExtractorInterface;
 use StockFlow\Warehouse\Domain\Aggregate\Stock;
 use StockFlow\Warehouse\Domain\ValueObject\StockResponse;
 

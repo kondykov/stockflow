@@ -8,7 +8,7 @@ use Nelmio\ApiDocBundle\Attribute\Model;
 use OpenApi\Attributes as OA;
 use StockFlow\Shared\Kernel\Application\Command\CommandBusInterface;
 use StockFlow\Shared\Kernel\Application\Query\QueryBusInterface;
-use StockFlow\Warehouse\Application\Command\CreateProductCommand;
+use StockFlow\Warehouse\Application\Command\AddNewStockItemCommand;
 use StockFlow\Warehouse\Application\Query\GetAllStocksQuery;
 use StockFlow\Warehouse\Domain\ValueObject\StockItemResponse;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -19,8 +19,8 @@ use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
 use Symfony\Component\Routing\Attribute\Route;
 
 #[OA\Tag(name: 'Warehouse — Products')]
-#[Route('/api/warehouse/product', name: 'warehouse_product_')]
-class ProductController extends AbstractController
+#[Route('/api/warehouse/stock/item', name: 'warehouse_product_')]
+class StockItemController extends AbstractController
 {
     #[Route(name: 'create', methods: ['POST'])]
     #[OA\Post(
@@ -28,7 +28,7 @@ class ProductController extends AbstractController
         requestBody: new OA\RequestBody(
             required: true,
             content: new OA\JsonContent(
-                ref: new Model(type: CreateProductCommand::class)
+                ref: new Model(type: AddNewStockItemCommand::class)
             )
         ),
         responses: [
@@ -50,7 +50,7 @@ class ProductController extends AbstractController
         ]
     )]
     public function create(
-        #[MapRequestPayload] CreateProductCommand $cmd,
+        #[MapRequestPayload] AddNewStockItemCommand $cmd,
         CommandBusInterface $bus
     ): Response {
         $response = $bus->execute($cmd);

@@ -14,6 +14,6 @@ class StockItem
     public function __construct(
         public readonly Sku $sku,
         public ?string $remoteId = null,
-        public int $quantity = 0,
-    ) {}
+    ) {
+    }
 }

@@ -49,6 +49,11 @@ services:
             $publicDir: '%upload_public_dir%'
             $privateDir: '%upload_private_dir%'
 
+    StockFlow\Shared\Kernel\Application\EventDispatcherInterface:
+        class: StockFlow\Shared\Kernel\Infrastructure\Messenger\EventDispatcher
+        arguments:
+            $eventBus: '@event.bus'
+
     _instanceof:
         StockFlow\Shared\Kernel\Application\Command\CommandHandlerInterface:
             tags:

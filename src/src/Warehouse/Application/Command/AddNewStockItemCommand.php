@@ -5,7 +5,7 @@ namespace StockFlow\Warehouse\Application\Command;
 use StockFlow\Shared\Kernel\Application\Command\CommandInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 
-final readonly class CreateProductCommand implements CommandInterface
+final readonly class AddNewStockItemCommand implements CommandInterface
 {
 
     public function __construct(

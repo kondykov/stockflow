@@ -6,7 +6,7 @@ use StockFlow\Identity\Application\Security\RoleNameNormalizer;
 use StockFlow\Identity\Domain\Dto\UserResponse;
 use StockFlow\Identity\Domain\Entity\User;
 use StockFlow\Identity\Infrastructure\Persistence\Doctrine\Repository\RoleRepository;
-use StockFlow\Shared\Kernel\Infrastructure\Extractor\ExtractorInterface;
+use StockFlow\Shared\Kernel\Application\Extractor\ExtractorInterface;
 
 /**
  * @implements ExtractorInterface<User, UserResponse>

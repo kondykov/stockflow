@@ -3,17 +3,20 @@
 namespace StockFlow\Warehouse\Application\Command\Stock;
 
 use Assert\Assert;
+use StockFlow\Identity\Application\Security\CurrentUserInterface;
 use StockFlow\Shared\Kernel\Application\Command\CommandHandlerInterface;
+use StockFlow\Shared\Kernel\Application\EventDispatcherInterface;
 use StockFlow\Warehouse\Application\Extractor\StockExtractor;
 use StockFlow\Warehouse\Domain\Repository\StockRepositoryInterface;
+use StockFlow\Warehouse\Domain\Repository\WarehouseRepositoryInterface;
 use StockFlow\Warehouse\Domain\ValueObject\StockResponse;
 
 readonly class AdjustmentStockCommandHandler implements CommandHandlerInterface
 {
     public function __construct(
         private StockExtractor $extractor,
-
         private CurrentUserInterface $currentUser,
+        private EventDispatcherInterface $eventDispatcher,
         private StockRepositoryInterface $stockRepository,
         private WarehouseRepositoryInterface $warehouseRepository,
     ) {
@@ -35,6 +38,10 @@ readonly class AdjustmentStockCommandHandler implements CommandHandlerInterface
         $stock->adjust($command->quantity);
 
         $this->stockRepository->save($stock);
+
+        foreach ($stock->pullDomainEvents() as $event) {
+            $this->eventDispatcher->dispatch($event);
+        }
 
         return $this->extractor->extract($stock);
     }
