@@ -2,13 +2,9 @@
 
 namespace StockFlow\Warehouse\Application\Query;
 
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use StockFlow\Shared\Kernel\Application\Query\QueryHandlerInterface;
 use StockFlow\Shared\Kernel\Domain\ValueObject\PaginatedResponse;
-use StockFlow\Warehouse\Application\Extractor\StockItemExtractor;
 use StockFlow\Warehouse\Application\Extractor\WarehouseExtractor;
-use StockFlow\Warehouse\Domain\Repository\StockItemRepositoryInterface;
 use StockFlow\Warehouse\Domain\Repository\WarehouseRepositoryInterface;
 
 final readonly class GetAllWarehousesQueryHandler implements QueryHandlerInterface

@@ -16,21 +16,31 @@ readonly class IncomingProductCommandHandler implements CommandHandlerInterface
     public function __construct(
         private StockExtractor $extractor,
 
+        private CurrentUserInterface $currentUser,
         private StockRepositoryInterface $stockRepository,
-        private StockItemRepositoryInterface $productRepository,
+        private StockItemRepositoryInterface $stockItemRepository,
         private WarehouseRepositoryInterface $warehouseRepository,
     ) {
     }
 
     public function __invoke(IncomingProductCommand $command): StockResponse
     {
+        $user = $this->currentUser->getUser();
+        $warehouse = $this->warehouseRepository->findById($command->warehouseId);
+
+        Assert::lazy()
+            ->that($warehouse, 'warehouse')->notEmpty('Склад не найден')
+            ->that($warehouse?->userId === $user->id, 'warehouse_access')->true('У вас нет доступа к этому складу')
+            ->verifyNow();
         $stock = $this->stockRepository->findByWarehouseIdAndProductId($command->warehouseId, $command->productId);
 
         if ($stock) {
             $stock->receive($command->quantity);
         } else {
+            /** @var Warehouse $wh */
             $wh = $this->warehouseRepository->findById($command->warehouseId);
-            $product = $this->productRepository->findById($command->productId);
+            /** @var StockItem $product */
+            $product = $this->stockItemRepository->findById($command->productId);
 
             Assert::lazy()
                 ->that($product, 'productId')->notEmpty('Продукт не найден')

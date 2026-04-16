@@ -2,8 +2,6 @@
 
 namespace StockFlow\Warehouse\Infrastructure\Persistence\Doctrine\Repository;
 
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\Persistence\ManagerRegistry;
 use StockFlow\Shared\Kernel\Infrastructure\Persistence\Doctrine\Repository\AbstractRepository;
 use StockFlow\Warehouse\Domain\Entity\StockItem;
@@ -24,16 +22,4 @@ class StockItemRepository extends AbstractRepository implements StockItemReposit
 
         return $qb->getQuery()->getOneOrNullResult();
 	}
-
-    public function findAllInWarehouse(int $warehouseId, int $page, int $pageSize): Collection
-    {
-        $qb = $this->createQueryBuilder("s")
-            ->innerJoin("s.warehouseProducts", "wp")
-            ->where("wp.warehouse = :warehouseId")
-            ->setParameter("warehouseId", $warehouseId)
-            ->setFirstResult(($page - 1) * $pageSize)
-            ->setMaxResults($pageSize);
-
-        return new ArrayCollection($qb->getQuery()->getResult());
-    }
 }
