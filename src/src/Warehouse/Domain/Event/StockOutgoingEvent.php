@@ -8,10 +8,10 @@ use DateTimeImmutable;
 use StockFlow\Shared\Kernel\Domain\DomainEvent;
 
 /**
- * Событие: товар поступил на склад.
- * Возникает когда количество товара увеличивается через операцию receive().
+ * Событие: товар отгружен со склада.
+ * Возникает когда количество товара уменьшается через операцию deduct().
  */
-final class StockIncomingRecorded extends DomainEvent
+final class StockOutgoingEvent extends DomainEvent
 {
     public function __construct(
         public readonly int $warehouseId,

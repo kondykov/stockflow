@@ -2,17 +2,17 @@
 
 namespace StockFlow\Warehouse\Application\Event;
 
-use StockFlow\Warehouse\Domain\Event\StockOutgoingRecorded;
+use StockFlow\Warehouse\Domain\Event\StockOutgoingEvent;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 
 #[AsMessageHandler]
-class StockOutgoingNotificationHandler
+class StockOutgoingEventHandler
 {
-    public function __invoke(StockOutgoingRecorded $event): void
+    public function __invoke(StockOutgoingEvent $event): void
     {
         echo sprintf(
             "--- NOTIFICATION ---\nТовар ID %d был отгружен со склада ID %d в количестве %d ед.\n--------------------\n",
-            $event->productId,
+            $event->stockItemId,
             $event->warehouseId,
             $event->quantity
         );

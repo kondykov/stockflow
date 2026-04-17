@@ -11,7 +11,7 @@ use StockFlow\Shared\Kernel\Domain\DomainEvent;
  * Событие: количество товара откорректировано.
  * Возникает когда количество товара изменяется через операцию adjust().
  */
-final class StockMovementRecorded extends DomainEvent
+final class StockMovementEvent extends DomainEvent
 {
     public function __construct(
         public readonly int $warehouseId,

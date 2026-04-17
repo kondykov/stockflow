@@ -2,13 +2,13 @@
 
 namespace StockFlow\Warehouse\Application\Event;
 
-use StockFlow\Warehouse\Domain\Event\StockMovementRecorded;
+use StockFlow\Warehouse\Domain\Event\StockMovementEvent;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 
 #[AsMessageHandler]
-class StockMovementNotificationHandler
+class StockMovementEventHandler
 {
-    public function __invoke(StockMovementRecorded $event): void
+    public function __invoke(StockMovementEvent $event): void
     {
         $diff = $event->quantityDiff;
         $direction = $diff > 0 ? 'увеличился' : 'уменьшился';
@@ -20,7 +20,7 @@ class StockMovementNotificationHandler
             "Старый остаток: %d -> Новый остаток: %d\n" .
             "Причина: %s\n",
             $event->warehouseId,
-            $event->productId,
+            $event->stockItemId,
             abs($diff),
             $direction,
             $event->oldQuantity,

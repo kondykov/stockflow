@@ -7,8 +7,10 @@ use StockFlow\Catalog\Application\Extractor\ProductExtractor;
 use StockFlow\Catalog\Domain\Dto\ProductResponse;
 use StockFlow\Catalog\Domain\Entity\Product;
 use StockFlow\Catalog\Domain\Repository\ProductRepositoryInterface;
+use StockFlow\Shared\Catalog\Domain\Events\ProductCreatedEvent;
 use StockFlow\Shared\Catalog\Domain\ValueObject\Sku;
 use StockFlow\Shared\Kernel\Application\Command\CommandHandlerInterface;
+use StockFlow\Shared\Kernel\Application\EventDispatcherInterface;
 use StockFlow\Shared\Kernel\Domain\File\FileUploaderInterface;
 
 readonly class CreateProductCommandHandler implements CommandHandlerInterface
@@ -16,6 +18,7 @@ readonly class CreateProductCommandHandler implements CommandHandlerInterface
     public function __construct(
         private ProductExtractor $extractor,
         private ProductRepositoryInterface $repository,
+        private EventDispatcherInterface $eventDispatcher,
         private FileUploaderInterface $uploader,
     ) {
     }
@@ -48,6 +51,15 @@ readonly class CreateProductCommandHandler implements CommandHandlerInterface
         }
 
         $this->repository->save($product);
+
+        $this->eventDispatcher->dispatch(
+            new ProductCreatedEvent(
+                name: $product->name,
+                skuCode: $product->sku->code,
+                skuName: $product->sku->name,
+                aggregateId: $product->id,
+            )
+        );
 
         return $this->extractor->extract($product);
     }

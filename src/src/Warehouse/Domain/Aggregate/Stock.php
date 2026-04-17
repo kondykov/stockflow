@@ -8,9 +8,9 @@ use StockFlow\Shared\Kernel\Domain\Aggregate\AggregateRoot;
 use StockFlow\Shared\Kernel\Domain\Trait\TimeStamps;
 use StockFlow\Warehouse\Domain\Entity\StockItem;
 use StockFlow\Warehouse\Domain\Entity\Warehouse;
-use StockFlow\Warehouse\Domain\Event\StockIncomingRecorded;
-use StockFlow\Warehouse\Domain\Event\StockMovementRecorded;
-use StockFlow\Warehouse\Domain\Event\StockOutgoingRecorded;
+use StockFlow\Warehouse\Domain\Event\StockIncomingEvent;
+use StockFlow\Warehouse\Domain\Event\StockMovementEvent;
+use StockFlow\Warehouse\Domain\Event\StockOutgoingEvent;
 
 /**
  * Класс Stock представляет собой агрегат, который управляет количеством товара на складе.
@@ -48,7 +48,7 @@ class Stock extends AggregateRoot
             ->lessOrEqualThan($this->onHands, 'Невозможно отгрузить больше, чем есть на складе')
             ->verifyNow();
 
-        $this->record(new StockOutgoingRecorded(
+        $this->record(new StockOutgoingEvent(
             warehouseId: $this->warehouse->id,
             stockItemId: $this->item->id,
             quantity: $quantity,
@@ -74,7 +74,7 @@ class Stock extends AggregateRoot
             ->greaterThan(0, 'Количество должно быть положительным')
             ->verifyNow();
 
-        $this->record(new StockIncomingRecorded(
+        $this->record(new StockIncomingEvent(
             warehouseId: $this->warehouse->id,
             stockItemId: $this->item->id,
             quantity: $quantity,
@@ -99,7 +99,7 @@ class Stock extends AggregateRoot
             ->greaterOrEqualThan(0, 'Количество не может быть отрицательным')
             ->verifyNow();
 
-        $this->record(new StockMovementRecorded(
+        $this->record(new StockMovementEvent(
             warehouseId: $this->warehouse->id,
             stockItemId: $this->item->id,
             oldQuantity: $this->onHands,
