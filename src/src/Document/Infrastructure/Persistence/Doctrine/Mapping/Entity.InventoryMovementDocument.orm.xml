@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<doctrine-mapping
+    xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping
+    https://www.doctrine-project.org/schemas/orm/doctrine-mapping.xsd"
+>
+    <entity
+        name="StockFlow\Document\Domain\Entity\InventoryMovementDocument"
+        table="document"
+        inheritance-type="SINGLE_TABLE"
+    >
+        <field name="warehouseId" type="integer" column="warehouse_id"/>
+        <field name="stockItemId" type="integer" column="stock_item_id"/>
+        <field name="quantity" type="integer" column="quantity"/>
+        <field name="reason" type="string" column="reason" nullable="true"/>
+        <field name="correlationId" type="string" column="correlation_id" nullable="true"/>
+    </entity>
+</doctrine-mapping>

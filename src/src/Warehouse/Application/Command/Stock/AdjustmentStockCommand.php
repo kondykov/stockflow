@@ -13,7 +13,7 @@ final readonly class AdjustmentStockCommand implements CommandInterface
         public int $warehouseId,
         #[Assert\NotBlank(message: 'Идентификатор позиции товара не может быть пустым')]
         #[Assert\Positive(message: 'Идентификатор позиции товара должен быть положительным числом')]
-        public int $stockItemId,
+        public int $stockId,
         #[Assert\NotBlank(message: 'Количество не может быть пустым')]
         #[Assert\Positive(message: 'Количество должно быть положительным числом')]
         public int $quantity,

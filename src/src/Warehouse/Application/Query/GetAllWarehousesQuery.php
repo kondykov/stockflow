@@ -12,6 +12,7 @@ final readonly class GetAllWarehousesQuery implements QueryInterface
         public int $page = 1,
         #[Assert\Positive(message: "Размер страницы должен быть положительным")]
         public int $pageSize = 20,
+        public ?string $search = null
     ) {
     }
 }

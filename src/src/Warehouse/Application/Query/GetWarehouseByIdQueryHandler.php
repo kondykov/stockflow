@@ -2,11 +2,11 @@
 
 namespace StockFlow\Warehouse\Application\Query;
 
-use Assert\Assert;
 use StockFlow\Shared\Kernel\Application\Query\QueryHandlerInterface;
 use StockFlow\Warehouse\Application\Extractor\WarehouseExtractor;
 use StockFlow\Warehouse\Domain\Repository\WarehouseRepositoryInterface;
 use StockFlow\Warehouse\Domain\ValueObject\WarehouseResponse;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 final readonly class GetWarehouseByIdQueryHandler implements QueryHandlerInterface
 {
@@ -20,8 +20,9 @@ final readonly class GetWarehouseByIdQueryHandler implements QueryHandlerInterfa
     {
         $wh = $this->repository->findById($query->id);
 
-        Assert::that($wh, defaultPropertyPath: 'id')
-            ->notNull('Склад с id %s не найден');
+        if (!$wh) {
+            throw new NotFoundHttpException('Склад не найден');
+        }
 
         return $this->extractor->extract($wh);
     }

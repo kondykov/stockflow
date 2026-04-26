@@ -17,7 +17,7 @@ final readonly class GetAllStocksQueryHandler implements QueryHandlerInterface
 
     public function __invoke(GetAllStocksQuery $query): PaginatedResponse
     {
-        $result = $this->repository->findByWarehouseIdPaginated($query->id, $query->page, $query->pageSize);
+        $result = $this->repository->findByWarehouseIdPaginated($query->id, $query->page, $query->pageSize, $query->search);
 
         $extractedEntities = [];
 

@@ -38,6 +38,13 @@ doctrine:
                 alias: Catalog
                 mapping: true
 
+            Document:
+                type: xml
+                is_bundle: false
+                dir: '%kernel.project_dir%/src/Document/Infrastructure/Persistence/Doctrine/Mapping'
+                prefix: 'StockFlow\Document\Domain'
+                alias: Document
+                mapping: true
 
             SharedCatalog:
                 type: xml

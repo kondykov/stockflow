@@ -43,7 +43,9 @@ services:
     env_file:
       - .env
     depends_on:
-      - rabbitmq
+      rabbitmq:
+        condition: service_healthy
+    restart: on-failure
     networks:
       - stockflow-network
     container_name: stockflow.consumer
@@ -72,6 +74,11 @@ services:
       - "5672:5672"
     networks:
       - stockflow-network
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
     container_name: stockflow.rabbitmq
 
 networks:

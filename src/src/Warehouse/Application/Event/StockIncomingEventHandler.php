@@ -5,7 +5,7 @@ namespace StockFlow\Warehouse\Application\Event;
 use StockFlow\Warehouse\Domain\Event\StockIncomingEvent;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 
-#[AsMessageHandler]
+//#[AsMessageHandler]
 class StockIncomingEventHandler
 {
     public function __invoke(StockIncomingEvent $event): void

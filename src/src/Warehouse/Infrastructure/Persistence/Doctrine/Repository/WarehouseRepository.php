@@ -3,6 +3,7 @@
 namespace StockFlow\Warehouse\Infrastructure\Persistence\Doctrine\Repository;
 
 use Doctrine\Persistence\ManagerRegistry;
+use StockFlow\Shared\Kernel\Domain\ValueObject\PaginatedResponse;
 use StockFlow\Shared\Kernel\Infrastructure\Persistence\Doctrine\Repository\AbstractRepository;
 use StockFlow\Warehouse\Domain\Entity\Warehouse;
 use StockFlow\Warehouse\Domain\Repository\WarehouseRepositoryInterface;

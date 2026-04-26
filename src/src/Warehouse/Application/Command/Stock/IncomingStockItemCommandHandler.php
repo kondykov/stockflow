@@ -36,7 +36,7 @@ readonly class IncomingStockItemCommandHandler implements CommandHandlerInterfac
             ->that($warehouse, 'warehouse')->notEmpty('Склад не найден')
             ->that($warehouse?->userId === $user->id, 'warehouse_access')->true('У вас нет доступа к этому складу')
             ->verifyNow();
-        $stock = $this->stockRepository->findByWarehouseIdAndStockItemId($command->warehouseId, $command->stockItemId);
+        $stock = $this->stockRepository->findByWarehouseIdAndStockItemId($command->warehouseId, $command->stockId);
 
         if ($stock) {
             $stock->receive($command->quantity);
@@ -44,12 +44,7 @@ readonly class IncomingStockItemCommandHandler implements CommandHandlerInterfac
             /** @var Warehouse $wh */
             $wh = $this->warehouseRepository->findById($command->warehouseId);
             /** @var StockItem $stockItem */
-            $stockItem = $this->stockItemRepository->findById($command->stockItemId);
-
-            Assert::lazy()
-                ->that($stockItem, 'stockItemId')->notEmpty('Позиция товара не найдена')
-                ->that($wh, 'warehouseId')->notEmpty('Склад не найден')
-                ->verifyNow();
+            $stockItem = $this->stockItemRepository->findById($command->stockId);
 
             $stock = new Stock(
                 warehouse: $wh,

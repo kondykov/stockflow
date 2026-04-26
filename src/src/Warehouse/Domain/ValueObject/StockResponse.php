@@ -8,6 +8,9 @@ final readonly class StockResponse
         public int $warehouseId,
         public int $stockItemId,
         public int $onHand,
+        public string $skuCode,
+        public string $skuName,
+        public int $productId,
     ) {
     }
 }

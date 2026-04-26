@@ -21,6 +21,7 @@ final class StockMovementEvent extends DomainEvent
         public readonly ?string $reason = null,
         int|string $aggregateId = 0,
         ?DateTimeImmutable $occurredAt = null,
+        public ?string $correlationId = null
     ) {
         parent::__construct($aggregateId, $occurredAt);
     }

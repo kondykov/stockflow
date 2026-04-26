@@ -19,6 +19,7 @@ final class StockIncomingEvent extends DomainEvent
         public readonly int $quantity,
         int|string $aggregateId = 0,
         ?DateTimeImmutable $occurredAt = null,
+        public ?string $correlationId = null
     ) {
         parent::__construct($aggregateId, $occurredAt);
     }

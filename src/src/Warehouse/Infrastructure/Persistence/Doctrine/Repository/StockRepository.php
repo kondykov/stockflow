@@ -15,46 +15,44 @@ class StockRepository extends AbstractRepository implements StockRepositoryInter
         parent::__construct($registry, Stock::class);
     }
 
+
     public function findByWarehouseIdAndStockItemId(int $warehouseId, int $stockItemId): ?Stock
     {
-        $qb = $this->createQueryBuilder('s')
+        return $this->createQueryBuilder('s')
             ->where('s.warehouse = :warehouseId')
             ->andWhere('s.item = :stockItemId')
             ->setParameter('warehouseId', $warehouseId)
-            ->setParameter('stockItemId', $stockItemId);
-
-        return $qb->getQuery()->getOneOrNullResult();
+            ->setParameter('stockItemId', $stockItemId)
+            ->getQuery()
+            ->getOneOrNullResult();
     }
 
-    public function findByWarehouseIdPaginated(int $warehouseId, int $page = 1, int $pageSize = 20): PaginatedResponse
+    public function findByIdsPaginated(array $ids, int $page, int $pageSize): PaginatedResponse
     {
-        $page = max(1, $page);
-        $pageSize = max(1, min($pageSize, 100));
+        $qb = $this->createQueryBuilder('s')
+            ->innerJoin('s.item', 'i')
+            ->where('i.id IN (:itemIds)')
+            ->setParameter('itemIds', $ids);
 
-        $total = $this->createQueryBuilder('s')
-            ->select('COUNT(s.id)')
+        return $this->paginateQueryBuilder($qb, $page, $pageSize);
+    }
+
+    public function findByWarehouseIdPaginated(
+        int $warehouseId,
+        int $page = 1,
+        int $pageSize = 20,
+        ?string $search = null
+    ): PaginatedResponse {
+        $qb = $this->createQueryBuilder('s')
+            ->innerJoin('s.item', 'i')
             ->where('s.warehouse = :warehouseId')
-            ->setParameter('warehouseId', $warehouseId)
-            ->getQuery()
-            ->getSingleScalarResult();
+            ->setParameter('warehouseId', $warehouseId);
 
-        $items = $this->createQueryBuilder('s')
-            ->where('s.warehouse = :warehouseId')
-            ->setParameter('warehouseId', $warehouseId)
-            ->setFirstResult(($page - 1) * $pageSize)
-            ->setMaxResults($pageSize)
-            ->getQuery()
-            ->getResult();
+        if ($search) {
+            $qb->andWhere('i.name LIKE :search OR i.sku LIKE :search')
+                ->setParameter('search', '%' . $search . '%');
+        }
 
-        $totalPages = (int)ceil($total / $pageSize);
-
-        return new PaginatedResponse(
-            page: $page,
-            perPage: $pageSize,
-            totalCount: $total,
-            totalPages: $totalPages,
-            hasMorePages: $page < $totalPages,
-            items: $items
-        );
+        return $this->paginateQueryBuilder($qb, $page, $pageSize);
     }
 }
