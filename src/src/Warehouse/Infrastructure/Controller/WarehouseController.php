@@ -6,6 +6,7 @@ namespace StockFlow\Warehouse\Infrastructure\Controller;
 
 use Nelmio\ApiDocBundle\Attribute\Model;
 use OpenApi\Attributes as OA;
+use StockFlow\Shared\Identity\Domain\Enum\RBAC\Permission;
 use StockFlow\Shared\Kernel\Application\Command\CommandBusInterface;
 use StockFlow\Shared\Kernel\Application\Query\QueryBusInterface;
 use StockFlow\Warehouse\Application\Command\CreateWarehouseCommand;
@@ -20,6 +21,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Attribute\MapQueryString;
 use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\Validator\Exception\ValidationFailedException;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
@@ -28,11 +30,12 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 class WarehouseController extends AbstractController
 {
     public function __construct(
-        private ValidatorInterface $validator,
+        private readonly ValidatorInterface $validator,
     ) {
     }
 
     #[Route(name: 'create', methods: ['POST'])]
+    #[IsGranted(Permission::WarehouseCreate->value)]
     #[OA\Post(
         summary: 'Создать склад',
         requestBody: new OA\RequestBody(
@@ -114,6 +117,7 @@ class WarehouseController extends AbstractController
     }
 
     #[Route("/{id}", name: 'update', methods: ['PUT'])]
+    #[IsGranted(Permission::WarehouseUpdate->value)]
     public function update(
         int $id,
         Request $request,

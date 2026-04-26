@@ -19,33 +19,42 @@ use Symfony\Component\Routing\Attribute\Route;
 #[Route('/api/warehouse/stock/item', name: 'warehouse_product_')]
 class StockItemController extends AbstractController
 {
-    #[Route(name: 'create', methods: ['POST'])]
-    #[OA\Post(
-        summary: 'Создать продукт',
-        requestBody: new OA\RequestBody(
-            required: true,
-            content: new OA\JsonContent(
-                ref: new Model(type: AddNewStockItemCommand::class)
-            )
-        ),
-        responses: [
-            new OA\Response(
-                response: 201,
-                description: 'Продукт успешно создан',
-                content: new OA\JsonContent(
-                    ref: new Model(type: StockItemResponse::class)
-                )
-            ),
-            new OA\Response(
-                response: 400,
-                description: 'Ошибка валидации или доменная ошибка',
-                content: new OA\JsonContent(properties: [
-                    new OA\Property(property: 'successful', type: 'boolean', example: false),
-                    new OA\Property(property: 'error', type: 'string', example: 'Имя не может быть пустым')
-                ])
-            )
-        ]
-    )]
+    /**
+     * Deprecated
+     *
+     * Синхронизация происходит автоматически
+     *
+     * @param AddNewStockItemCommand $cmd
+     * @param CommandBusInterface $bus
+     * @return Response
+     */
+//    #[Route(name: 'create', methods: ['POST'])]
+//    #[OA\Post(
+//        summary: 'Создать продукт',
+//        requestBody: new OA\RequestBody(
+//            required: true,
+//            content: new OA\JsonContent(
+//                ref: new Model(type: AddNewStockItemCommand::class)
+//            )
+//        ),
+//        responses: [
+//            new OA\Response(
+//                response: 201,
+//                description: 'Продукт успешно создан',
+//                content: new OA\JsonContent(
+//                    ref: new Model(type: StockItemResponse::class)
+//                )
+//            ),
+//            new OA\Response(
+//                response: 400,
+//                description: 'Ошибка валидации или доменная ошибка',
+//                content: new OA\JsonContent(properties: [
+//                    new OA\Property(property: 'successful', type: 'boolean', example: false),
+//                    new OA\Property(property: 'error', type: 'string', example: 'Имя не может быть пустым')
+//                ])
+//            )
+//        ]
+//    )]
     public function create(
         #[MapRequestPayload] AddNewStockItemCommand $cmd,
         CommandBusInterface $bus

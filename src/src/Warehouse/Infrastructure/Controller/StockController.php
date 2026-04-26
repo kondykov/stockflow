@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace StockFlow\Warehouse\Infrastructure\Controller;
 
 use OpenApi\Attributes as OA;
+use StockFlow\Shared\Identity\Domain\Enum\RBAC\Permission;
 use StockFlow\Shared\Kernel\Application\Command\CommandBusInterface;
 use StockFlow\Shared\Kernel\Application\Query\QueryBusInterface;
 use StockFlow\Warehouse\Application\Command\Stock\AdjustmentStockCommand;
@@ -18,6 +19,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\Validator\Exception\ValidationFailedException;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
@@ -56,6 +58,7 @@ class StockController extends AbstractController
     }
 
     #[Route('/incoming', name: 'incoming', methods: ['POST'])]
+    #[IsGranted(Permission::WarehouseStockMovements->value)]
     public function incoming(int $id, Request $request, CommandBusInterface $bus): Response
     {
         $data = $request->toArray();
@@ -72,6 +75,7 @@ class StockController extends AbstractController
     }
 
     #[Route('/outgoing', name: 'outgoing', methods: ['PATCH'])]
+    #[IsGranted(Permission::WarehouseStockMovements->value)]
     public function outgoing(int $id, Request $request, CommandBusInterface $bus): Response
     {
         $data = $request->toArray();
@@ -88,6 +92,7 @@ class StockController extends AbstractController
     }
 
     #[Route('/adjust', name: 'adjust', methods: ['PATCH'])]
+    #[IsGranted(Permission::WarehouseStockAdjustment->value)]
     public function adjust(int $id, Request $request, CommandBusInterface $bus): Response
     {
         $data = $request->toArray();
@@ -104,6 +109,7 @@ class StockController extends AbstractController
     }
 
     #[Route('/transfer', name: 'transfer', methods: ['POST'])]
+    #[IsGranted(Permission::WarehouseStockMovements->value)]
     public function transfer(int $id, Request $request, CommandBusInterface $bus): Response
     {
         $data = $request->toArray();
@@ -122,6 +128,7 @@ class StockController extends AbstractController
     }
 
     #[Route('/{stockId}', methods: ['DELETE'])]
+    #[IsGranted(Permission::WarehouseStockRemove->value)]
     public function remove(
         int $id,
         int $stockId,

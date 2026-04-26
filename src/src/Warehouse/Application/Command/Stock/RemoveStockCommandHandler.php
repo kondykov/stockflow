@@ -31,8 +31,6 @@ readonly class RemoveStockCommandHandler implements CommandHandlerInterface
             ->lessOrEqualThan(0, 'Невозможно удалить сток с остатком на складе')
             ->verifyNow();
 
-        return true;
-
         $this->stockRepository->remove($stock);
 
         return true;
