@@ -21,7 +21,7 @@ readonly class RemoveStockCommandHandler implements CommandHandlerInterface
         $stock = $this->stockRepository->findByWarehouseIdAndStockItemId($command->warehouseId, $command->stockId);
 
         Assert::lazy()
-            ->that($stock->warehouse, 'warehouseId')
+            ->that($stock?->warehouse, 'warehouseId')
             ->notEmpty('Склад не найден')
             ->that($stock->warehouse?->userId === $user->id, 'warehouse_access')
             ->true('У вас нет доступа к этому складу')
