@@ -3,7 +3,6 @@
 namespace StockFlow\Shared\Kernel\Application\Extractor;
 
 use StockFlow\Shared\Kernel\Domain\ValueObject\PaginatedResponse;
-use StockFlow\Shared\Kernel\Infrastructure\Extractor\ExtractorInterface;
 
 class PaginationExtractor
 {

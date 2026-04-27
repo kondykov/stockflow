@@ -10,7 +10,7 @@ use StockFlow\Warehouse\Domain\Entity\StockItem;
 use StockFlow\Warehouse\Domain\Repository\StockItemRepositoryInterface;
 use StockFlow\Warehouse\Domain\ValueObject\StockItemResponse;
 
-readonly class CreateProductCommandHandler implements CommandHandlerInterface
+readonly class AddNewStockItemCommandHandler implements CommandHandlerInterface
 {
     public function __construct(
         private StockItemExtractor $extractor,
@@ -18,7 +18,7 @@ readonly class CreateProductCommandHandler implements CommandHandlerInterface
     ) {
     }
 
-    public function __invoke(CreateProductCommand $command): StockItemResponse
+    public function __invoke(AddNewStockItemCommand $command): StockItemResponse
     {
         $exists = $this->repository->findBySkuCode($command->code);
 

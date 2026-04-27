@@ -1,0 +1,43 @@
+services:
+
+  app:
+    container_name: stockflow.api
+    build:
+      context: .
+      dockerfile: ./env/php/Dockerfile
+      target: production
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    volumes:
+      - ./src:/var/www
+      - ./.env:/var/www/.env
+    env_file:
+      - .env
+    depends_on:
+      - db
+      - rabbitmq
+    networks:
+      - stockflow-network
+
+  consumer:
+    build:
+      context: .
+      dockerfile: ./env/php/Dockerfile
+      target: development
+    command: php bin/console messenger:consume async -vv
+    volumes:
+      - ./src:/var/www
+      - ./.env:/var/www/.env
+    env_file:
+      - .env
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+    restart: on-failure
+    networks:
+      - stockflow-network
+    container_name: stockflow.consumer
+
+networks:
+  stockflow-network:
+    driver: bridge

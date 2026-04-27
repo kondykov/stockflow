@@ -26,7 +26,7 @@ services:
             - '../src/**/Domain/ValueObject/'
             - '../src/Kernel.php'
 
-    StockFlow\Shared\Kernel\Infrastructure\Extractor\ExtractorInterface:
+    StockFlow\Shared\Kernel\Application\Extractor\ExtractorInterface:
         alias: StockFlow\Identity\Infrastructure\Extractor\UserExtractor
 
     StockFlow\Catalog\Application\Extractor\ProductExtractor: ~
@@ -48,6 +48,11 @@ services:
         arguments:
             $publicDir: '%upload_public_dir%'
             $privateDir: '%upload_private_dir%'
+
+    StockFlow\Shared\Kernel\Application\EventDispatcherInterface:
+        class: StockFlow\Shared\Kernel\Infrastructure\Messenger\EventDispatcher
+        arguments:
+            $eventBus: '@event.bus'
 
     _instanceof:
         StockFlow\Shared\Kernel\Application\Command\CommandHandlerInterface:

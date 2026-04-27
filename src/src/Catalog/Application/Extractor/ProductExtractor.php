@@ -2,11 +2,11 @@
 
 namespace StockFlow\Catalog\Application\Extractor;
 
+use StockFlow\Catalog\Domain\Dto\ProductResponse;
 use StockFlow\Catalog\Domain\Entity\Product;
 use StockFlow\Catalog\Domain\Entity\ProductAttribute;
 use StockFlow\Catalog\Domain\Entity\ProductImage;
-use StockFlow\Catalog\Domain\Dto\ProductResponse;
-use StockFlow\Shared\Kernel\Infrastructure\Extractor\ExtractorInterface;
+use StockFlow\Shared\Kernel\Application\Extractor\ExtractorInterface;
 
 /**
  * @implements ExtractorInterface<Product, ProductResponse>

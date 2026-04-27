@@ -26,4 +26,10 @@ interface RepositoryInterface
     public function findById(int|string $id): ?object;
 
     public function findAllPaginated(int $page = 1, int $pageSize = 20): PaginatedResponse;
+
+    public function findAllPaginatedWithSearch(
+        int $page = 1,
+        int $pageSize = 20,
+        ?string $search = null
+    ): PaginatedResponse;
 }

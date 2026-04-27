@@ -4,123 +4,143 @@ declare(strict_types=1);
 
 namespace StockFlow\Warehouse\Infrastructure\Controller;
 
-use Nelmio\ApiDocBundle\Attribute\Model;
 use OpenApi\Attributes as OA;
+use StockFlow\Shared\Identity\Domain\Enum\RBAC\Permission;
 use StockFlow\Shared\Kernel\Application\Command\CommandBusInterface;
+use StockFlow\Shared\Kernel\Application\Query\QueryBusInterface;
 use StockFlow\Warehouse\Application\Command\Stock\AdjustmentStockCommand;
-use StockFlow\Warehouse\Application\Command\Stock\IncomingProductCommand;
-use StockFlow\Warehouse\Application\Command\Stock\OutgoingProductCommand;
-use StockFlow\Warehouse\Domain\ValueObject\StockResponse;
+use StockFlow\Warehouse\Application\Command\Stock\IncomingStockItemCommand;
+use StockFlow\Warehouse\Application\Command\Stock\OutgoingStockItemCommand;
+use StockFlow\Warehouse\Application\Command\Stock\RemoveStockCommand;
+use StockFlow\Warehouse\Application\Command\Stock\TransferStockCommand;
+use StockFlow\Warehouse\Application\Query\GetAllStocksQuery;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Symfony\Component\Validator\Exception\ValidationFailedException;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 #[OA\Tag(name: 'Warehouse — Stock')]
-#[Route('/api/warehouse/stock', name: 'warehouse_stock_')]
+#[Route('/api/warehouse/{id}/stock', name: 'warehouse_stock_')]
 class StockController extends AbstractController
 {
+    public function __construct(
+        private readonly ValidatorInterface $validator
+    ) {
+    }
+
+    #[Route(name: 'get_all', methods: ['GET'])]
+    public function getAll(int $id, Request $request, QueryBusInterface $bus): JsonResponse
+    {
+        $query = new GetAllStocksQuery(
+            id: $id,
+            page: (int)$request->query->get('page', 1),
+            pageSize: (int)$request->query->get('pageSize', 20),
+        );
+
+        $errors = $this->validator->validate($query);
+        if (count($errors) > 0) {
+            throw new ValidationFailedException($query, $errors);
+        }
+
+        return new JsonResponse($bus->execute($query));
+    }
+
+    private function validate(object $command): void
+    {
+        $errors = $this->validator->validate($command);
+        if (count($errors) > 0) {
+            throw new ValidationFailedException($command, $errors);
+        }
+    }
+
     #[Route('/incoming', name: 'incoming', methods: ['POST'])]
-    #[OA\Post(
-        summary: 'Приход товара на склад',
-        requestBody: new OA\RequestBody(
-            required: true,
-            content: new OA\JsonContent(
-                ref: new Model(type: IncomingProductCommand::class)
-            )
-        ),
-        responses: [
-            new OA\Response(
-                response: 201,
-                description: 'Остаток обновлён (приход)',
-                content: new OA\JsonContent(
-                    ref: new Model(type: StockResponse::class)
-                )
-            ),
-            new OA\Response(
-                response: 400,
-                description: 'Ошибка валидации или доменная ошибка',
-                content: new OA\JsonContent(properties: [
-                    new OA\Property(property: 'successful', type: 'boolean', example: false),
-                    new OA\Property(property: 'error', type: 'string',
-                        example: 'Количество должно быть положительным числом')
-                ])
-            )
-        ]
-    )]
-    public function incoming(
-        #[MapRequestPayload] IncomingProductCommand $cmd,
-        CommandBusInterface $bus
-    ): Response {
+    #[IsGranted(Permission::WarehouseStockMovements->value)]
+    public function incoming(int $id, Request $request, CommandBusInterface $bus): Response
+    {
+        $data = $request->toArray();
+
+        $cmd = new IncomingStockItemCommand(
+            warehouseId: $id,
+            stockId: (int)($data['stockItemId'] ?? 0),
+            quantity: (int)($data['quantity'] ?? 0),
+        );
+
+        $this->validate($cmd);
+
         return new JsonResponse($bus->execute($cmd), Response::HTTP_CREATED);
     }
 
     #[Route('/outgoing', name: 'outgoing', methods: ['PATCH'])]
-    #[OA\Patch(
-        summary: 'Расход товара со склада',
-        requestBody: new OA\RequestBody(
-            required: true,
-            content: new OA\JsonContent(
-                ref: new Model(type: OutgoingProductCommand::class)
-            )
-        ),
-        responses: [
-            new OA\Response(
-                response: 200,
-                description: 'Остаток обновлён (расход)',
-                content: new OA\JsonContent(
-                    ref: new Model(type: StockResponse::class)
-                )
-            ),
-            new OA\Response(
-                response: 400,
-                description: 'Ошибка валидации или доменная ошибка',
-                content: new OA\JsonContent(properties: [
-                    new OA\Property(property: 'successful', type: 'boolean', example: false),
-                    new OA\Property(property: 'error', type: 'string', example: 'Недостаточно товара на складе')
-                ])
-            )
-        ]
-    )]
-    public function outgoing(
-        #[MapRequestPayload] OutgoingProductCommand $cmd,
-        CommandBusInterface $bus
-    ): Response {
+    #[IsGranted(Permission::WarehouseStockMovements->value)]
+    public function outgoing(int $id, Request $request, CommandBusInterface $bus): Response
+    {
+        $data = $request->toArray();
+
+        $cmd = new OutgoingStockItemCommand(
+            warehouseId: $id,
+            stockId: (int)($data['stockItemId'] ?? 0),
+            quantity: (int)($data['quantity'] ?? 0),
+        );
+
+        $this->validate($cmd);
+
         return new JsonResponse($bus->execute($cmd), Response::HTTP_OK);
     }
 
     #[Route('/adjust', name: 'adjust', methods: ['PATCH'])]
-    #[OA\Patch(
-        summary: 'Корректировка остатка',
-        requestBody: new OA\RequestBody(
-            required: true,
-            content: new OA\JsonContent(
-                ref: new Model(type: AdjustmentStockCommand::class)
-            )
-        ),
-        responses: [
-            new OA\Response(
-                response: 200,
-                description: 'Остаток скорректирован',
-                content: new OA\JsonContent(
-                    ref: new Model(type: StockResponse::class)
-                )
-            ),
-            new OA\Response(
-                response: 400,
-                description: 'Ошибка валидации или доменная ошибка',
-                content: new OA\JsonContent(properties: [
-                    new OA\Property(property: 'successful', type: 'boolean', example: false),
-                    new OA\Property(property: 'error', type: 'string', example: 'Нельзя установить остаток меньше нуля')
-                ])
-            )
-        ]
-    )]
-    public function adjust(
-        #[MapRequestPayload] AdjustmentStockCommand $cmd,
+    #[IsGranted(Permission::WarehouseStockAdjustment->value)]
+    public function adjust(int $id, Request $request, CommandBusInterface $bus): Response
+    {
+        $data = $request->toArray();
+
+        $cmd = new AdjustmentStockCommand(
+            warehouseId: $id,
+            stockId: (int)($data['stockItemId'] ?? 0),
+            quantity: (int)($data['quantity'] ?? 0),
+        );
+
+        $this->validate($cmd);
+
+        return new JsonResponse($bus->execute($cmd), Response::HTTP_OK);
+    }
+
+    #[Route('/transfer', name: 'transfer', methods: ['POST'])]
+    #[IsGranted(Permission::WarehouseStockMovements->value)]
+    public function transfer(int $id, Request $request, CommandBusInterface $bus): Response
+    {
+        $data = $request->toArray();
+
+        $cmd = new TransferStockCommand(
+            fromWarehouseId: $id,
+            toWarehouseId: (int)($data['toWarehouseId'] ?? 0),
+            stockId: (int)($data['stockItemId'] ?? 0),
+            quantity: (int)($data['quantity'] ?? 0),
+            reason: $data['reason'] ?? null
+        );
+
+        $this->validate($cmd);
+
+        return new JsonResponse($bus->execute($cmd), Response::HTTP_OK);
+    }
+
+    #[Route('/{stockId}', methods: ['DELETE'])]
+    #[IsGranted(Permission::WarehouseStockRemove->value)]
+    public function remove(
+        int $id,
+        int $stockId,
         CommandBusInterface $bus
     ): Response {
+        $cmd = new RemoveStockCommand(
+            warehouseId: $id,
+            stockId: $stockId
+        );
+
+        $this->validate($cmd);
+
         return new JsonResponse($bus->execute($cmd), Response::HTTP_OK);
     }
 }

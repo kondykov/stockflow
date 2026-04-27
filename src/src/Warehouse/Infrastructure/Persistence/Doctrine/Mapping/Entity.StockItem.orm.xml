@@ -8,7 +8,7 @@
             <generator strategy="IDENTITY"/>
         </id>
 
-        <field name="quantity" type="integer" column="quantity"/>
+        <field name="remoteId" type="string" column="remote_id" nullable="true"/>
         <field name="createdAt" type="datetime_immutable" column="created_at"/>
         <field name="updatedAt" type="datetime_immutable" column="updated_at"/>
 

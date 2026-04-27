@@ -6,7 +6,7 @@ use StockFlow\Identity\Application\Security\RoleNameNormalizer;
 use StockFlow\Identity\Domain\Dto\RoleResponse;
 use StockFlow\Identity\Domain\Entity\RBAC\Role;
 use StockFlow\Shared\Identity\Domain\Enum\RBAC\Permission;
-use StockFlow\Shared\Kernel\Infrastructure\Extractor\ExtractorInterface;
+use StockFlow\Shared\Kernel\Application\Extractor\ExtractorInterface;
 
 /**
  * @implements ExtractorInterface<Role, RoleResponse>

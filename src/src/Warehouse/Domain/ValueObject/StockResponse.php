@@ -6,8 +6,11 @@ final readonly class StockResponse
 {
     public function __construct(
         public int $warehouseId,
-        public int $productId,
+        public int $stockItemId,
         public int $onHand,
+        public string $skuCode,
+        public string $skuName,
+        public int $productId,
     ) {
     }
 }

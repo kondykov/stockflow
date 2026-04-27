@@ -37,15 +37,23 @@ abstract class AbstractRepository extends ServiceEntityRepository implements Rep
 
     public function findAllPaginated(int $page = 1, int $pageSize = 20): PaginatedResponse
     {
+        return $this->paginateQueryBuilder($this->createQueryBuilder('e'), $page, $pageSize);
+    }
+
+    protected function paginateQueryBuilder($qb, int $page, int $pageSize): PaginatedResponse
+    {
+        $alias = $qb->getRootAliases()[0];
+
         $page = max(1, $page);
         $pageSize = max(1, min($pageSize, 100));
 
-        $total = $this->createQueryBuilder('e')
-            ->select('COUNT(e.id)')
+        $total = (int)(clone $qb)
+            ->resetDQLPart('orderBy')
+            ->select("COUNT($alias.id)")
             ->getQuery()
             ->getSingleScalarResult();
 
-        $items = $this->createQueryBuilder('e')
+        $items = $qb
             ->setFirstResult(($page - 1) * $pageSize)
             ->setMaxResults($pageSize)
             ->getQuery()
@@ -61,5 +69,19 @@ abstract class AbstractRepository extends ServiceEntityRepository implements Rep
             hasMorePages: $page < $totalPages,
             items: $items
         );
+    }
+    public function findAllPaginatedWithSearch(
+        int $page = 1,
+        int $pageSize = 20,
+        ?string $search = null
+    ): PaginatedResponse {
+        $qb = $this->createQueryBuilder('w');
+
+        if ($search) {
+            $qb->andWhere('w.name LIKE :search OR w.address LIKE :search')
+                ->setParameter('search', '%' . $search . '%');
+        }
+
+        return $this->paginateQueryBuilder($qb, $page, $pageSize);
     }
 }

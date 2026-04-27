@@ -2,29 +2,27 @@
 
 namespace StockFlow\Warehouse\Application\Query;
 
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use StockFlow\Shared\Kernel\Application\Query\QueryHandlerInterface;
 use StockFlow\Shared\Kernel\Domain\ValueObject\PaginatedResponse;
-use StockFlow\Warehouse\Application\Extractor\StockItemExtractor;
-use StockFlow\Warehouse\Domain\Repository\StockItemRepositoryInterface;
+use StockFlow\Warehouse\Application\Extractor\StockExtractor;
+use StockFlow\Warehouse\Domain\Repository\StockRepositoryInterface;
 
 final readonly class GetAllStocksQueryHandler implements QueryHandlerInterface
 {
     public function __construct(
-        private StockItemExtractor $extractor,
-        private StockItemRepositoryInterface $repository,
+        private StockExtractor $extractor,
+        private StockRepositoryInterface $repository,
     ) {
     }
 
     public function __invoke(GetAllStocksQuery $query): PaginatedResponse
     {
-        $result = $this->repository->findAllPaginated($query->page, $query->pageSize);
+        $result = $this->repository->findByWarehouseIdPaginated($query->id, $query->page, $query->pageSize, $query->search);
 
         $extractedEntities = [];
 
-        foreach ($result->items as $product) {
-            $extractedEntities[] = $this->extractor->extract($product);
+        foreach ($result->items as $stock) {
+            $extractedEntities[] = $this->extractor->extract($stock);
         }
 
         return new PaginatedResponse(

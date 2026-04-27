@@ -14,6 +14,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\ExceptionEvent;
 use Symfony\Component\HttpKernel\Event\ResponseEvent;
 use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\Messenger\Exception\HandlerFailedException;
@@ -72,13 +73,20 @@ final readonly class ApiResponseListener
         $isLazyAssertion = $exception instanceof LazyAssertionException;
         $isAssert = $exception instanceof AssertException;
 
-        if ((!$isValidation && !$isLazyAssertion && !$isAssert) && $this->env === 'dev' && $this->useWhoops) {
+        $is404 = $exception instanceof NotFoundHttpException;
+
+        if ((!$isValidation && !$isLazyAssertion && !$isAssert && !$is404) && $this->env === 'dev' && $this->useWhoops) {
             return;
         }
 
         $message = 'Внутренняя ошибка сервера';
         $data = null;
         $code = Response::HTTP_INTERNAL_SERVER_ERROR;
+
+        if ($is404) {
+            $message = $exception->getMessage();
+            $code = 404;
+        }
 
         if ($isValidation) {
             $code = 422;
