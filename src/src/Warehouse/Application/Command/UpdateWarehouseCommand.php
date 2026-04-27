@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace StockFlow\Warehouse\Application\Command;
 
 use StockFlow\Shared\Kernel\Application\Command\CommandInterface;
@@ -7,7 +9,6 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 final readonly class UpdateWarehouseCommand implements CommandInterface
 {
-
     public function __construct(
         #[Assert\Positive(message: 'Идентификатор должен быть целым числом')]
         public int $id,
