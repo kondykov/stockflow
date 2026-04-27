@@ -26,6 +26,7 @@ WORKDIR /var/www
 RUN chown -R ${LOCAL_USER}:${LOCAL_USER} /var/www
 
 FROM base AS production
+WORKDIR /var/www/backend
 USER ${LOCAL_USER}
 
 FROM base AS development
