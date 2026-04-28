@@ -26,6 +26,7 @@ readonly class CreateUserCommandHandler implements CommandHandlerInterface
         Assert::that($userExists, 'Пользователь с таким email уже существует', 'email')->null();
 
         $user = new Manager();
+        $user->name = $command->name;
         $user->email = $command->email;
         $user->password = $this->hasher->hashPassword($user, $command->password);
 

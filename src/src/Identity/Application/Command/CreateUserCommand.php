@@ -12,6 +12,8 @@ use Symfony\Component\Validator\Constraints as Assert;
 final readonly class CreateUserCommand implements CommandInterface
 {
     public function __construct(
+        #[Assert\NotBlank(message: 'Имя не может быть пустым')]
+        public string $name = '',
         #[Assert\Email(message: 'Необходимо ввести email')]
         #[Assert\NotBlank(message: 'Поле обязательно к заполнению')]
         public string $email = '',
